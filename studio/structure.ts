@@ -5,8 +5,16 @@ import {
   User,
   ListCollapse,
   Quote,
+  Megaphone,
+  BadgeCheck,
+  ShoppingBag,
+  Hourglass,
+  Clock,
   Menu,
   Settings,
+  Funnel,
+  Monitor,
+  CreditCard,
 } from "lucide-react";
 
 export const structure = (S: any, context: any) =>
@@ -26,7 +34,7 @@ export const structure = (S: any, context: any) =>
         .child(
           S.documentTypeList("post")
             .title("Post")
-            .defaultOrdering([{ field: "_createdAt", direction: "desc" }]) // Default ordering
+            .defaultOrdering([{ field: "_createdAt", direction: "desc" }]), // Default ordering
         ),
       orderableDocumentListDeskItem({
         type: "category",
@@ -56,6 +64,63 @@ export const structure = (S: any, context: any) =>
         S,
         context,
       }),
+      S.divider({ title: "Marketing" }),
+      orderableDocumentListDeskItem({
+        type: "campaign",
+        title: "Campaigns",
+        icon: Megaphone,
+        S,
+        context,
+      }),
+      orderableDocumentListDeskItem({
+        type: "offer",
+        title: "Offers",
+        icon: ShoppingBag,
+        S,
+        context,
+      }),
+      orderableDocumentListDeskItem({
+        type: "guarantees",
+        title: "Guarantees",
+        icon: BadgeCheck,
+        S,
+        context,
+      }),
+      orderableDocumentListDeskItem({
+        type: "scarcity",
+        title: "Scarcity",
+        icon: Hourglass,
+        S,
+        context,
+      }),
+      orderableDocumentListDeskItem({
+        type: "urgency",
+        title: "Urgency",
+        icon: Clock,
+        S,
+        context,
+      }),
+      orderableDocumentListDeskItem({
+        type: "funnel",
+        title: "Funnels",
+        icon: Funnel,
+        S,
+        context,
+      }),
+      orderableDocumentListDeskItem({
+        type: "pricing",
+        title: "Pricing",
+        icon: CreditCard,
+        S,
+        context,
+      }),
+      orderableDocumentListDeskItem({
+        type: "service",
+        title: "Service Descriptions",
+        icon: Monitor,
+        S,
+        context,
+      }),
       S.divider({ title: "Global" }),
       S.listItem()
         .title("Navigation")
@@ -64,7 +129,7 @@ export const structure = (S: any, context: any) =>
           S.editor()
             .id("navigation")
             .schemaType("navigation")
-            .documentId("navigation")
+            .documentId("navigation"),
         ),
       S.listItem()
         .title("Settings")
@@ -73,6 +138,6 @@ export const structure = (S: any, context: any) =>
           S.editor()
             .id("settings")
             .schemaType("settings")
-            .documentId("settings")
+            .documentId("settings"),
         ),
     ]);

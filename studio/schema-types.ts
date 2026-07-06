@@ -5,6 +5,14 @@ import author from "./schemas/documents/author";
 import category from "./schemas/documents/category";
 import faq from "./schemas/documents/faq";
 import testimonial from "./schemas/documents/testimonial";
+import campaign from "./schemas/documents/campaign";
+import guarantees from "./schemas/documents/guarantees";
+import offer from "./schemas/documents/offer";
+import packageDocument from "./schemas/documents/package";
+import pricing from "./schemas/documents/pricing";
+import scarcity from "./schemas/documents/scarcity";
+import service from "./schemas/documents/service";
+import urgency from "./schemas/documents/urgency";
 import navigation from "./schemas/documents/navigation";
 import settings from "./schemas/documents/settings";
 
@@ -38,6 +46,7 @@ import logoCloud1 from "./schemas/blocks/logo-cloud/logo-cloud-1";
 import faqs from "./schemas/blocks/faqs";
 import newsletter from "./schemas/blocks/forms/newsletter";
 import allPosts from "./schemas/blocks/all-posts";
+import funnel from "./schemas/documents/funnel";
 
 export const schemaTypes = [
   // documents
@@ -47,6 +56,14 @@ export const schemaTypes = [
   category,
   faq,
   testimonial,
+  campaign,
+  guarantees,
+  offer,
+  funnel,
+  pricing,
+  scarcity,
+  service,
+  urgency,
   navigation,
   settings,
   // shared objects
