@@ -5,11 +5,15 @@ export default defineType({
   name: "campaign",
   title: "Campaign",
   type: "document",
+  description:
+    "Campaign-level naming wrapper and offer containment. Use the Magic Name fields to shape the market-facing name, not the underlying offer mechanics. Guarantees, urgency, and scarcity belong on each offer so the conversion mechanics stay attached to what is being sold.",
   fields: [
     defineField({
       name: "campaignDetails",
-      title: "Magic Name",
+      title: "Magic Name Wrapper",
       type: "object",
+      description:
+        "Alex Hormozi's Magic Name formula: choose the 3-5 strongest MAGI(C) name components for the wrapper/name. These fields shape how the offer is named and positioned; they do not define fulfillment, guarantees, urgency, or scarcity.",
       options: {
         collapsible: true,
         collapsed: false,
@@ -17,36 +21,37 @@ export default defineType({
       fields: [
         defineField({
           name: "magneticReason",
-          title: "Magnetic Reason",
+          title: "Magnet: Magnetic Reason",
           description:
-            "The compelling factor that draws the audience's attention and interest towards the campaign.",
+            "The attention-pulling reason someone should care about the named offer. Use the clearest hook, mechanism, novelty, or pain-point magnet that belongs in the name.",
           type: "string",
         }),
         defineField({
           name: "avatar",
-          title: "Avatar",
-          description: "The target audience or customer persona.",
+          title: "Avatar: Who It Is For",
+          description:
+            "The specific audience named in the wrapper. Use only if naming the buyer, role, segment, or situation makes the offer feel more relevant.",
           type: "string",
         }),
         defineField({
           name: "goal",
-          title: "Goal",
+          title: "Goal: Desired Outcome",
           description:
-            "The primary objective or desired outcome of the campaign.",
+            "The outcome promised or implied by the name. Keep this focused on the result the audience wants, not the internal campaign objective.",
           type: "string",
         }),
         defineField({
           name: "intervalTime",
-          title: "Interval Time",
+          title: "Interval: Timeframe",
           description:
-            "The time interval for the campaign's activities or events.",
+            "The timeframe or interval used in the name, such as 'in 30 days' or 'weekly'. Include only when time makes the name more concrete or compelling.",
           type: "string",
         }),
         defineField({
           name: "containerType",
-          title: "Container Type",
+          title: "Container: Format Type",
           description:
-            "The format or structure in which the outcome is delivered.",
+            "The named container for the promise, such as challenge, sprint, bootcamp, audit, blueprint, or system. This is the wrapper format, not the full fulfillment model.",
           type: "string",
         }),
       ],
@@ -71,25 +76,9 @@ export default defineType({
       name: "offers",
       title: "Offers",
       type: "array",
+      description:
+        "The offers contained in this campaign. Configure each offer's guarantees, urgency, and scarcity on the offer itself.",
       of: [{ type: "reference", to: [{ type: "offer" }] }],
-    }),
-    defineField({
-      name: "urgency",
-      title: "Urgency",
-      type: "array",
-      of: [{ type: "reference", to: [{ type: "urgency" }] }],
-    }),
-    defineField({
-      name: "scarcity",
-      title: "Scarcity",
-      type: "array",
-      of: [{ type: "reference", to: [{ type: "scarcity" }] }],
-    }),
-    defineField({
-      name: "guarantees",
-      title: "Guarantees",
-      type: "array",
-      of: [{ type: "reference", to: [{ type: "guarantees" }] }],
     }),
     orderRankField({ type: "campaign" }),
   ],

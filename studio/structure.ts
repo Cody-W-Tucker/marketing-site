@@ -12,7 +12,6 @@ import {
   Clock,
   Menu,
   Settings,
-  Funnel,
   Monitor,
   CreditCard,
 } from "lucide-react";
@@ -80,6 +79,13 @@ export const structure = (S: any, context: any) =>
         context,
       }),
       orderableDocumentListDeskItem({
+        type: "subOffer",
+        title: "Sub-offers",
+        icon: ShoppingBag,
+        S,
+        context,
+      }),
+      orderableDocumentListDeskItem({
         type: "guarantees",
         title: "Guarantees",
         icon: BadgeCheck,
@@ -101,13 +107,6 @@ export const structure = (S: any, context: any) =>
         context,
       }),
       orderableDocumentListDeskItem({
-        type: "funnel",
-        title: "Funnels",
-        icon: Funnel,
-        S,
-        context,
-      }),
-      orderableDocumentListDeskItem({
         type: "pricing",
         title: "Pricing",
         icon: CreditCard,
@@ -115,8 +114,8 @@ export const structure = (S: any, context: any) =>
         context,
       }),
       orderableDocumentListDeskItem({
-        type: "service",
-        title: "Service Descriptions",
+        type: "fulfillment",
+        title: "Fulfillment Models",
         icon: Monitor,
         S,
         context,
