@@ -1,5 +1,69 @@
 import { orderRankField } from "@sanity/orderable-document-list";
-import { defineField, defineType } from "sanity";
+import { useEffect } from "react";
+import {
+  defineField,
+  defineType,
+  PatchEvent,
+  set,
+  unset,
+  type ObjectInputProps,
+} from "sanity";
+
+type CampaignDetails = {
+  magneticReason?: string;
+  avatar?: string;
+  goal?: string;
+  intervalTime?: string;
+  containerType?: string;
+};
+
+type CampaignDocument = {
+  title?: string;
+  campaignDetails?: CampaignDetails;
+};
+
+const magicNameFields: (keyof CampaignDetails)[] = [
+  "magneticReason",
+  "avatar",
+  "goal",
+  "intervalTime",
+  "containerType",
+];
+
+function isCampaignDetails(value: unknown): value is CampaignDetails {
+  return typeof value === "object" && value !== null;
+}
+
+function deriveCampaignTitle(campaignDetails: unknown) {
+  if (!isCampaignDetails(campaignDetails)) {
+    return "";
+  }
+
+  return magicNameFields
+    .map((field) => campaignDetails[field]?.trim())
+    .filter(Boolean)
+    .join(" ");
+}
+
+function CampaignDocumentInput(props: ObjectInputProps<CampaignDocument>) {
+  const { onChange, value } = props;
+  const title = value?.title ?? "";
+  const derivedTitle = deriveCampaignTitle(value?.campaignDetails);
+
+  useEffect(() => {
+    if (title === derivedTitle) {
+      return;
+    }
+
+    onChange(
+      PatchEvent.from(
+        derivedTitle ? set(derivedTitle, ["title"]) : unset(["title"]),
+      ),
+    );
+  }, [derivedTitle, onChange, title]);
+
+  return props.renderDefault(props);
+}
 
 export default defineType({
   name: "campaign",
@@ -7,6 +71,9 @@ export default defineType({
   type: "document",
   description:
     "Campaign-level naming wrapper and offer containment. Use the Magic Name fields to shape the market-facing name, not the underlying offer mechanics. Guarantees, urgency, and scarcity belong on each offer so the conversion mechanics stay attached to what is being sold.",
+  components: {
+    input: CampaignDocumentInput,
+  },
   fields: [
     defineField({
       name: "campaignDetails",
@@ -54,22 +121,23 @@ export default defineType({
             "The named container for the promise, such as challenge, sprint, bootcamp, audit, blueprint, or system. This is the wrapper format, not the full fulfillment model.",
           type: "string",
         }),
+        defineField({
+          name: "title",
+          title: "Title",
+          type: "string",
+          hidden: true,
+        }),
       ],
-      preview: {
-        select: {
-          magneticReason: "magneticReason",
-          avatar: "avatar",
-          goal: "goal",
-          intervalTime: "intervalTime",
-          containerType: "containerType",
-        },
-        prepare({ magneticReason, avatar, goal, intervalTime, containerType }) {
-          return {
-            title: [magneticReason, avatar, goal, intervalTime, containerType]
-              .filter(Boolean)
-              .join(" - "),
-          };
-        },
+    }),
+    defineField({
+      name: "slug",
+      title: "Slug",
+      description:
+        "The slug for the campaign, generated from the derived title.",
+      type: "slug",
+      options: {
+        source: (document) => deriveCampaignTitle(document.campaignDetails),
+        maxLength: 96,
       },
     }),
     defineField({
@@ -82,4 +150,16 @@ export default defineType({
     }),
     orderRankField({ type: "campaign" }),
   ],
+  preview: {
+    select: {
+      campaignDetails: "campaignDetails",
+      slug: "slug.current",
+    },
+    prepare({ campaignDetails, slug }) {
+      return {
+        title: deriveCampaignTitle(campaignDetails),
+        subtitle: slug,
+      };
+    },
+  },
 });

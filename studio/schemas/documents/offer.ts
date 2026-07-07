@@ -1,9 +1,9 @@
 import { orderRankField } from "@sanity/orderable-document-list";
 import { defineArrayMember, defineField, defineType } from "sanity";
 
-const subOfferReference = defineArrayMember({
+const bonusOfferReference = defineArrayMember({
   type: "reference",
-  to: [{ type: "subOffer" }],
+  to: [{ type: "bonusOffer" }],
 });
 
 const guaranteeReference = defineArrayMember({
@@ -26,7 +26,7 @@ export default defineType({
   title: "Offer",
   type: "document",
   description:
-    "A core sellable offer. Use sub-offer references for supporting bonuses, entry points, upsells, continuity paths, and downsells around this main offer.",
+    "A core sellable offer. Use role-specific offer references for supporting bonuses, entry points, upsells, continuity paths, and downsells around this main offer.",
   fields: [
     defineField({
       name: "name",
@@ -43,8 +43,7 @@ export default defineType({
         defineField({
           name: "dreamOutcome",
           title: "Dream Outcome",
-          type: "text",
-          rows: 3,
+          type: "block-content",
           description:
             "The concrete result the buyer wants most from this offer.",
           validation: (Rule) => Rule.max(300),
@@ -52,8 +51,7 @@ export default defineType({
         defineField({
           name: "perceivedLikelihood",
           title: "Perceived Likelihood of Success",
-          type: "text",
-          rows: 3,
+          type: "block-content",
           description:
             "Why the buyer should believe they can actually get the outcome.",
           validation: (Rule) => Rule.max(300),
@@ -61,8 +59,7 @@ export default defineType({
         defineField({
           name: "timeDelay",
           title: "Time Delay",
-          type: "text",
-          rows: 2,
+          type: "block-content",
           description:
             "How quickly the buyer can expect progress, proof, or the full result.",
           validation: (Rule) => Rule.max(240),
@@ -70,8 +67,7 @@ export default defineType({
         defineField({
           name: "effortAndSacrifice",
           title: "Effort & Sacrifice",
-          type: "text",
-          rows: 2,
+          type: "block-content",
           description:
             "What the buyer must do, give up, learn, or endure to succeed—and how the offer reduces that burden.",
           validation: (Rule) => Rule.max(240),
@@ -79,19 +75,20 @@ export default defineType({
       ],
     }),
     defineField({
-      name: "serviceOrProduct",
-      title: "Fulfillment or Product",
-      type: "block-content",
+      name: "fulfillmentModel",
+      title: "Fulfillment Model",
+      type: "reference",
+      to: [{ type: "fulfillment" }],
       description:
-        "What is delivered to create the dream outcome, increase confidence, shorten time delay, or reduce effort.",
+        "Optional link to the fulfillment model this offer uses. Keep this reference for now; fulfillment documents are still managed separately.",
     }),
     defineField({
       name: "bonus",
       title: "Bonus Offers",
       type: "array",
       description:
-        "Reusable sub-offers that increase the value or confidence of this core offer without becoming the main thing being sold.",
-      of: [subOfferReference],
+        "Bonus offers that increase the value or confidence of this core offer without becoming the main thing being sold.",
+      of: [bonusOfferReference],
     }),
     defineField({
       name: "featureList",
@@ -129,44 +126,36 @@ export default defineType({
       of: [scarcityReference],
     }),
     defineField({
-      name: "fulfillmentModel",
-      title: "Fulfillment Model",
-      type: "reference",
-      to: [{ type: "fulfillment" }],
-      description:
-        "Optional link to the fulfillment model this offer uses. Keep this reference for now; fulfillment documents are still managed separately.",
-    }),
-    defineField({
       name: "attractionOffer",
       title: "Attraction Offer",
       type: "reference",
-      to: [{ type: "subOffer" }],
+      to: [{ type: "attractionOffer" }],
       description:
-        "The lighter front-end or entry-point sub-offer that helps someone first pay attention, say yes, or enter the path toward this core offer.",
+        "The lighter front-end or entry-point offer that helps someone first pay attention, say yes, or enter the path toward this core offer.",
     }),
     defineField({
       name: "upsellOffer",
       title: "Upsell Offer",
       type: "reference",
-      to: [{ type: "subOffer" }],
+      to: [{ type: "upsellOffer" }],
       description:
-        "The higher-value or next-step sub-offer shown when someone is ready for more depth, speed, scope, or support than the core offer provides.",
+        "The higher-value or next-step offer shown when someone is ready for more depth, speed, scope, or support than the core offer provides.",
     }),
     defineField({
       name: "continuityOffer",
       title: "Continuity Offer",
       type: "reference",
-      to: [{ type: "subOffer" }],
+      to: [{ type: "continuityOffer" }],
       description:
-        "The recurring, subscription, retainer, membership, or ongoing support sub-offer that extends the relationship after or alongside the core offer.",
+        "The recurring, subscription, retainer, membership, or ongoing support offer that extends the relationship after or alongside the core offer.",
     }),
     defineField({
       name: "downsellOffer",
       title: "Downsell Offer",
       type: "reference",
-      to: [{ type: "subOffer" }],
+      to: [{ type: "downsellOffer" }],
       description:
-        "The lighter, lower-commitment fallback sub-offer for someone who is interested but not ready for the main or higher-value path.",
+        "The lighter, lower-commitment fallback offer for someone who is interested but not ready for the main or higher-value path.",
     }),
     orderRankField({ type: "offer" }),
   ],

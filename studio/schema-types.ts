@@ -8,7 +8,11 @@ import testimonial from "./schemas/documents/testimonial";
 import campaign from "./schemas/documents/campaign";
 import guarantees from "./schemas/documents/guarantees";
 import offer from "./schemas/documents/offer";
-import subOffer from "./schemas/documents/sub-offer";
+import bonusOffer from "./schemas/documents/bonus-offer";
+import attractionOffer from "./schemas/documents/attraction-offer";
+import upsellOffer from "./schemas/documents/upsell-offer";
+import continuityOffer from "./schemas/documents/continuity-offer";
+import downsellOffer from "./schemas/documents/downsell-offer";
 import pricing from "./schemas/documents/pricing";
 import scarcity from "./schemas/documents/scarcity";
 import fulfillment from "./schemas/documents/fulfillment";
@@ -58,7 +62,11 @@ export const schemaTypes = [
   campaign,
   guarantees,
   offer,
-  subOffer,
+  bonusOffer,
+  attractionOffer,
+  upsellOffer,
+  continuityOffer,
+  downsellOffer,
   pricing,
   scarcity,
   fulfillment,
