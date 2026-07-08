@@ -7,13 +7,28 @@ type RichTextBlock = {
 
 type RichTextValue = RichTextBlock[] | null;
 
-type CampaignDetails = {
+export type CampaignDetails = {
   magneticReason?: string;
   avatar?: string;
   goal?: string;
   intervalTime?: string;
   containerType?: string;
 };
+
+export function deriveCampaignTitle(
+  campaignDetails?: CampaignDetails | null,
+): string {
+  if (!campaignDetails) return "";
+
+  const d = campaignDetails;
+  const parts: string[] = [];
+  if (d.magneticReason?.trim()) parts.push(d.magneticReason.trim());
+  if (d.avatar?.trim()) parts.push(`for ${d.avatar.trim()}`);
+  if (d.goal?.trim()) parts.push(`to ${d.goal.trim()}`);
+  if (d.intervalTime?.trim()) parts.push(`in ${d.intervalTime.trim()}`);
+  if (d.containerType?.trim()) parts.push(d.containerType.trim());
+  return parts.join(" ");
+}
 
 type PricingModel = {
   title?: string;
@@ -163,7 +178,6 @@ type Offer = {
 
 export type CampaignLandingPageQueryResult = {
   _id: string;
-  title?: string;
   slug?: string;
   campaignDetails?: CampaignDetails;
   offers?: Offer[];
@@ -174,7 +188,6 @@ export type CampaignSlugsQueryResult = { slug?: { current?: string } | null }[];
 export const CAMPAIGN_LANDING_PAGE_QUERY = groq`
   *[_type == "campaign" && slug.current == $slug][0]{
     _id,
-    title,
     "slug": slug.current,
     campaignDetails{
       magneticReason,

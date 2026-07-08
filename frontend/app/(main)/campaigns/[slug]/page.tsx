@@ -3,6 +3,7 @@ import {
   fetchCampaignLandingPage,
   fetchCampaignLandingPagesStaticParams,
 } from "@/sanity/lib/fetch";
+import { deriveCampaignTitle } from "@/sanity/queries/campaign";
 import { notFound } from "next/navigation";
 
 export async function generateStaticParams() {
@@ -23,12 +24,14 @@ export async function generateMetadata(props: {
     notFound();
   }
 
+  const derivedTitle = deriveCampaignTitle(campaign.campaignDetails);
+
   return {
-    title: campaign.title || "Campaign",
+    title: derivedTitle || "Campaign",
     description:
       campaign.campaignDetails?.goal ||
       campaign.offers?.[0]?.name ||
-      campaign.title ||
+      derivedTitle ||
       "Campaign landing page",
   };
 }

@@ -1,6 +1,7 @@
 import type { PortableTextProps } from "@portabletext/react";
 import type { ReactNode } from "react";
 import type { CampaignLandingPageQueryResult } from "@/sanity/queries/campaign";
+import { deriveCampaignTitle } from "@/sanity/queries/campaign";
 import PortableTextRenderer from "@/components/portable-text-renderer";
 
 type Campaign = NonNullable<CampaignLandingPageQueryResult>;
@@ -26,267 +27,244 @@ export default function CampaignLandingPage({
   campaign: Campaign;
 }) {
   const details = campaign.campaignDetails;
-  const offerCount = campaign.offers?.length ?? 0;
+  const derivedTitle = deriveCampaignTitle(details);
 
   return (
-    <main className="mx-auto flex w-full max-w-6xl flex-col gap-16 px-6 py-16 sm:px-10 lg:px-12">
-      <section className="flex flex-col gap-6 border-b border-border pb-12">
-        <div className="flex flex-wrap gap-2 text-sm text-muted-foreground">
-          {details?.avatar ? <Badge>{details.avatar}</Badge> : null}
-          {details?.containerType ? <Badge>{details.containerType}</Badge> : null}
-          {details?.intervalTime ? <Badge>{details.intervalTime}</Badge> : null}
-          <Badge>{offerCount} offer{offerCount === 1 ? "" : "s"}</Badge>
-        </div>
+    <main className="mx-auto max-w-prose px-6 py-16 text-[15px] leading-7 sm:px-8">
+      <header className="mb-12 border-b border-border pb-8">
+        <h1 className="max-w-4xl text-4xl font-semibold leading-[1.1] tracking-normal text-foreground break-words sm:text-5xl">
+          {derivedTitle || "Campaign"}
+        </h1>
+      </header>
 
-        <div className="max-w-4xl space-y-4">
-          {details?.magneticReason ? (
-            <p className="text-sm uppercase tracking-[0.18em] text-muted-foreground">
-              {details.magneticReason}
-            </p>
-          ) : null}
+      {campaign.offers?.map((offer, index) => (
+        <article key={offer._id} className="mb-16 space-y-8 last:mb-0">
+          <div>
+            <div className="text-sm uppercase tracking-[0.18em] text-muted-foreground">
+              {index === 0 ? "Core Offer" : `Offer ${index + 1}`}
+            </div>
+            <h2 className="mt-1 text-2xl font-semibold tracking-tight text-foreground">
+              {offer.name || "Untitled offer"}
+            </h2>
+            {offer.priceModel ? (
+              <p className="mt-2 text-sm text-muted-foreground">
+                {formatPrice(offer.priceModel.price, offer.priceModel.currency)}
+                {offer.priceModel.billingModel
+                  ? ` · ${humanizeToken(offer.priceModel.billingModel)}`
+                  : ""}
+                {offer.priceModel.title ? ` · ${offer.priceModel.title}` : ""}
+              </p>
+            ) : null}
+          </div>
 
-          <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
-            {campaign.title || "Campaign"}
-          </h1>
-
-          {details?.goal ? (
-            <p className="max-w-3xl text-lg leading-8 text-muted-foreground">
-              {details.goal}
-            </p>
-          ) : null}
-        </div>
-      </section>
-
-      <section className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_18rem]">
-        <div className="space-y-8">
-          {campaign.offers?.map((offer) => (
-            <article
-              key={offer._id}
-              className="space-y-8 rounded-2xl border border-border p-6 sm:p-8"
-            >
-              <header className="flex flex-col gap-4 border-b border-border pb-6 sm:flex-row sm:items-start sm:justify-between">
-                <div className="space-y-2">
-                  <p className="text-sm uppercase tracking-[0.18em] text-muted-foreground">
-                    Core Offer
-                  </p>
-                  <h2 className="text-2xl font-semibold tracking-tight text-foreground">
-                    {offer.name || "Untitled offer"}
-                  </h2>
-                </div>
-
-                {offer.priceModel ? (
-                  <div className="space-y-1 text-sm text-muted-foreground sm:text-right">
-                    <p className="font-medium text-foreground">
-                      {formatPrice(offer.priceModel.price, offer.priceModel.currency)}
-                    </p>
-                    {offer.priceModel.billingModel ? (
-                      <p>{humanizeToken(offer.priceModel.billingModel)}</p>
-                    ) : null}
-                    {offer.priceModel.title ? <p>{offer.priceModel.title}</p> : null}
+          <div className="space-y-6">
+            {offer.valueEquation ? (
+              <div className="space-y-4">
+                {offer.valueEquation.dreamOutcome ? (
+                  <div>
+                    <span className="text-muted-foreground">
+                      Dream Outcome:
+                    </span>{" "}
+                    <span className="text-foreground">
+                      <PortableTextRenderer
+                        value={offer.valueEquation.dreamOutcome}
+                      />
+                    </span>
                   </div>
                 ) : null}
-              </header>
-
-              <div className="grid gap-6 md:grid-cols-2">
-                <RichTextPanel
-                  title="Dream Outcome"
-                  value={offer.valueEquation?.dreamOutcome}
-                />
-                <RichTextPanel
-                  title="Likelihood of Success"
-                  value={offer.valueEquation?.perceivedLikelihood}
-                />
-                <RichTextPanel
-                  title="Speed"
-                  value={offer.valueEquation?.timeDelay}
-                />
-                <RichTextPanel
-                  title="Ease"
-                  value={offer.valueEquation?.effortAndSacrifice}
-                />
+                {offer.valueEquation.perceivedLikelihood ? (
+                  <div>
+                    <span className="text-muted-foreground">
+                      Likelihood of Success:
+                    </span>{" "}
+                    <span className="text-foreground">
+                      <PortableTextRenderer
+                        value={offer.valueEquation.perceivedLikelihood}
+                      />
+                    </span>
+                  </div>
+                ) : null}
+                {offer.valueEquation.timeDelay ? (
+                  <div>
+                    <span className="text-muted-foreground">Speed:</span>{" "}
+                    <span className="text-foreground">
+                      <PortableTextRenderer
+                        value={offer.valueEquation.timeDelay}
+                      />
+                    </span>
+                  </div>
+                ) : null}
+                {offer.valueEquation.effortAndSacrifice ? (
+                  <div>
+                    <span className="text-muted-foreground">Ease:</span>{" "}
+                    <span className="text-foreground">
+                      <PortableTextRenderer
+                        value={offer.valueEquation.effortAndSacrifice}
+                      />
+                    </span>
+                  </div>
+                ) : null}
               </div>
-
-              {offer.featureList ? (
-                <Section title="What&apos;s Included">
+            ) : null}
+            {offer.featureList ? (
+              <section>
+                <h3 className="mb-3 text-sm font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                  What&apos;s Included
+                </h3>
+                <div className="text-foreground">
                   <PortableTextRenderer value={offer.featureList} />
-                </Section>
-              ) : null}
+                </div>
+              </section>
+            ) : null}
+          </div>
 
-              <RelatedOffersSection offer={offer} />
+          <RelatedOffersSection offer={offer} />
 
-              {offer.fulfillmentModel ? (
-                <Section title="How Delivery Works">
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <TextPanel
-                      title="Delivery Format"
-                      value={offer.fulfillmentModel.deliveryFormat}
-                    />
-                    <TextPanel
-                      title="Timeline"
-                      value={offer.fulfillmentModel.timeline}
-                    />
-                    <TextPanel title="Scope" value={offer.fulfillmentModel.scope} />
-                    <TextPanel
-                      title="Support Model"
-                      value={offer.fulfillmentModel.cadenceOrSupportModel}
-                    />
-                  </div>
+          {offer.fulfillmentModel ? (
+            <section className="space-y-4">
+              <h3 className="text-sm font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                How Delivery Works
+              </h3>
+              <div className="space-y-1 text-foreground">
+                {offer.fulfillmentModel.deliveryFormat ? (
+                  <p>
+                    <span className="text-muted-foreground">Format:</span>{" "}
+                    {offer.fulfillmentModel.deliveryFormat}
+                  </p>
+                ) : null}
+                {offer.fulfillmentModel.timeline ? (
+                  <p>
+                    <span className="text-muted-foreground">Timeline:</span>{" "}
+                    {offer.fulfillmentModel.timeline}
+                  </p>
+                ) : null}
+                {offer.fulfillmentModel.scope ? (
+                  <p>
+                    <span className="text-muted-foreground">Scope:</span>{" "}
+                    {offer.fulfillmentModel.scope}
+                  </p>
+                ) : null}
+                {offer.fulfillmentModel.cadenceOrSupportModel ? (
+                  <p>
+                    <span className="text-muted-foreground">Support:</span>{" "}
+                    {offer.fulfillmentModel.cadenceOrSupportModel}
+                  </p>
+                ) : null}
+              </div>
+              <StringList
+                title="Deliverables"
+                items={offer.fulfillmentModel.deliverables}
+              />
+              <StringList
+                title="Client Responsibilities"
+                items={offer.fulfillmentModel.clientResponsibilities}
+              />
+              <StringList
+                title="Success Criteria"
+                items={offer.fulfillmentModel.successCriteria}
+              />
+            </section>
+          ) : null}
 
-                  <StringList
-                    title="Deliverables"
-                    items={offer.fulfillmentModel.deliverables}
-                  />
-                  <StringList
-                    title="Client Responsibilities"
-                    items={offer.fulfillmentModel.clientResponsibilities}
-                  />
-                  <StringList
-                    title="Success Criteria"
-                    items={offer.fulfillmentModel.successCriteria}
-                  />
-                </Section>
-              ) : null}
+          {offer.bonus?.length ? (
+            <section>
+              <h3 className="mb-3 text-sm font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                Bonuses
+              </h3>
+              <ul className="space-y-3">
+                {offer.bonus.map((bonus) => (
+                  <li key={bonus._id} className="text-foreground">
+                    <span className="font-medium">{bonus.name || "Bonus"}</span>
+                    {bonus.summary ? (
+                      <span className="text-muted-foreground">
+                        {" "}
+                        — {bonus.summary}
+                      </span>
+                    ) : null}
+                    {bonus.promisedOutcome ? (
+                      <span> · {bonus.promisedOutcome}</span>
+                    ) : null}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
 
-              {offer.bonus?.length ? (
-                <Section title="Bonuses">
-                  <div className="grid gap-4">
-                    {offer.bonus.map((bonus) => (
-                      <div
-                        key={bonus._id}
-                        className="rounded-xl border border-border p-4"
-                      >
-                        <h3 className="text-base font-medium text-foreground">
-                          {bonus.name || "Bonus"}
-                        </h3>
-                        {bonus.summary ? (
-                          <p className="mt-2 text-sm text-muted-foreground">
-                            {bonus.summary}
-                          </p>
-                        ) : null}
-                        {bonus.promisedOutcome ? (
-                          <p className="mt-3 text-sm text-foreground">
-                            {bonus.promisedOutcome}
-                          </p>
-                        ) : null}
-                      </div>
-                    ))}
-                  </div>
-                </Section>
-              ) : null}
+          {offer.guarantees?.length ? (
+            <section>
+              <h3 className="mb-3 text-sm font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                Guarantees
+              </h3>
+              <ul className="space-y-3">
+                {offer.guarantees.map((guarantee) => (
+                  <li key={guarantee._id} className="text-foreground">
+                    <span className="font-medium">
+                      {guarantee.title || "Guarantee"}
+                    </span>
+                    {guarantee.guaranteeType ? (
+                      <span className="text-muted-foreground">
+                        {" "}
+                        ({humanizeToken(guarantee.guaranteeType)})
+                      </span>
+                    ) : null}
+                    {guarantee.promise ? (
+                      <span> — {guarantee.promise}</span>
+                    ) : null}
+                    {guarantee.claimWindowDays ? (
+                      <span className="text-muted-foreground">
+                        {" "}
+                        (claim window: {guarantee.claimWindowDays} days)
+                      </span>
+                    ) : null}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
 
-              {offer.guarantees?.length ? (
-                <Section title="Guarantees">
-                  <div className="grid gap-4">
-                    {offer.guarantees.map((guarantee) => (
-                      <div
-                        key={guarantee._id}
-                        className="rounded-xl border border-border p-4"
-                      >
-                        <div className="flex flex-wrap items-center gap-2">
-                          <h3 className="text-base font-medium text-foreground">
-                            {guarantee.title || "Guarantee"}
-                          </h3>
-                          {guarantee.guaranteeType ? (
-                            <Badge>{humanizeToken(guarantee.guaranteeType)}</Badge>
-                          ) : null}
-                        </div>
-                        {guarantee.promise ? (
-                          <p className="mt-2 text-sm text-foreground">
-                            {guarantee.promise}
-                          </p>
-                        ) : null}
-                        {guarantee.claimWindowDays ? (
-                          <p className="mt-2 text-sm text-muted-foreground">
-                            Claim window: {guarantee.claimWindowDays} days
-                          </p>
-                        ) : null}
-                      </div>
-                    ))}
-                  </div>
-                </Section>
-              ) : null}
-
-              {(offer.urgency?.length || offer.scarcity?.length) ? (
-                <Section title="Why Act Now">
-                  <div className="grid gap-4 md:grid-cols-2">
-                    {offer.urgency?.map((item) => (
-                      <div
-                        key={item._id}
-                        className="rounded-xl border border-border p-4"
-                      >
-                        <h3 className="text-base font-medium text-foreground">
-                          {item.title || "Urgency"}
-                        </h3>
-                        {item.displayCopy ? (
-                          <p className="mt-2 text-sm text-foreground">
-                            {item.displayCopy}
-                          </p>
-                        ) : null}
-                        {item.endsAt ? (
-                          <p className="mt-2 text-sm text-muted-foreground">
-                            Ends {formatDate(item.endsAt)}
-                          </p>
-                        ) : null}
-                      </div>
-                    ))}
-
-                    {offer.scarcity?.map((item) => (
-                      <div
-                        key={item._id}
-                        className="rounded-xl border border-border p-4"
-                      >
-                        <h3 className="text-base font-medium text-foreground">
-                          {item.title || "Scarcity"}
-                        </h3>
-                        {item.displayCopy ? (
-                          <p className="mt-2 text-sm text-foreground">
-                            {item.displayCopy}
-                          </p>
-                        ) : null}
-                        {typeof item.quantityLimit === "number" ? (
-                          <p className="mt-2 text-sm text-muted-foreground">
-                            Limit: {item.quantityLimit}
-                          </p>
-                        ) : null}
-                      </div>
-                    ))}
-                  </div>
-                </Section>
-              ) : null}
-            </article>
-          ))}
-        </div>
-
-        <aside className="h-fit rounded-2xl border border-border p-6">
-          <h2 className="text-sm font-medium uppercase tracking-[0.18em] text-muted-foreground">
-            Campaign Snapshot
-          </h2>
-          <dl className="mt-4 space-y-4 text-sm">
-            <div>
-              <dt className="text-muted-foreground">Audience</dt>
-              <dd className="mt-1 text-foreground">
-                {details?.avatar || "Not set"}
-              </dd>
-            </div>
-            <div>
-              <dt className="text-muted-foreground">Outcome</dt>
-              <dd className="mt-1 text-foreground">{details?.goal || "Not set"}</dd>
-            </div>
-            <div>
-              <dt className="text-muted-foreground">Timeframe</dt>
-              <dd className="mt-1 text-foreground">
-                {details?.intervalTime || "Not set"}
-              </dd>
-            </div>
-            <div>
-              <dt className="text-muted-foreground">Format</dt>
-              <dd className="mt-1 text-foreground">
-                {details?.containerType || "Not set"}
-              </dd>
-            </div>
-          </dl>
-        </aside>
-      </section>
+          {offer.urgency?.length || offer.scarcity?.length ? (
+            <section>
+              <h3 className="mb-3 text-sm font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                Why Act Now
+              </h3>
+              <ul className="space-y-3">
+                {offer.urgency?.map((item) => (
+                  <li key={item._id} className="text-foreground">
+                    <span className="font-medium">
+                      {item.title || "Urgency"}
+                    </span>
+                    {item.displayCopy ? (
+                      <span> — {item.displayCopy}</span>
+                    ) : null}
+                    {item.endsAt ? (
+                      <span className="text-muted-foreground">
+                        {" "}
+                        (ends {formatDate(item.endsAt)})
+                      </span>
+                    ) : null}
+                  </li>
+                ))}
+                {offer.scarcity?.map((item) => (
+                  <li key={item._id} className="text-foreground">
+                    <span className="font-medium">
+                      {item.title || "Scarcity"}
+                    </span>
+                    {item.displayCopy ? (
+                      <span> — {item.displayCopy}</span>
+                    ) : null}
+                    {typeof item.quantityLimit === "number" ? (
+                      <span className="text-muted-foreground">
+                        {" "}
+                        (limit: {item.quantityLimit})
+                      </span>
+                    ) : null}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
+        </article>
+      ))}
     </main>
   );
 }
@@ -334,7 +312,10 @@ function RelatedOffersSection({ offer }: { offer: CoreOffer }) {
           value: offer.upsellOffer?.addedScopeSpeedSupport,
         },
         { title: "Trigger Point", value: offer.upsellOffer?.triggerPoint },
-        { title: "Decision Framing", value: offer.upsellOffer?.decisionFraming },
+        {
+          title: "Decision Framing",
+          value: offer.upsellOffer?.decisionFraming,
+        },
         { title: "Price Delta", value: offer.upsellOffer?.priceDelta },
         { title: "Timing", value: offer.upsellOffer?.timing },
       ],
@@ -405,13 +386,16 @@ function RelatedOffersSection({ offer }: { offer: CoreOffer }) {
   }
 
   return (
-    <Section title="Role-Specific Offers">
-      <div className="grid gap-4">
+    <section>
+      <h3 className="mb-3 text-sm font-medium uppercase tracking-[0.12em] text-muted-foreground">
+        Role-Specific Offers
+      </h3>
+      <div className="space-y-6">
         {availableOffers.map((item) => (
           <RelatedOfferPanel key={item.key} item={item} />
         ))}
       </div>
-    </Section>
+    </section>
   );
 }
 
@@ -443,26 +427,21 @@ function RelatedOfferPanel({ item }: { item: AvailableRelatedOfferConfig }) {
   const fields = item.fields.filter((field) => hasFieldValue(field.value));
 
   return (
-    <article className="space-y-5 rounded-xl border border-border p-5">
-      <header className="space-y-3 border-b border-border pb-5">
-        <div className="flex flex-wrap items-center gap-2">
-          <Badge>{item.label}</Badge>
-          {offer.name ? (
-            <h3 className="text-base font-medium text-foreground">{offer.name}</h3>
-          ) : null}
-        </div>
-        <div className="space-y-2">
-          <p className="text-sm leading-6 text-muted-foreground">
-            {item.description}
-          </p>
-          {offer.summary ? (
-            <p className="text-sm leading-7 text-foreground">{offer.summary}</p>
-          ) : null}
-        </div>
-      </header>
-
+    <div className="space-y-3">
+      <div>
+        <span className="text-sm uppercase tracking-[0.12em] text-muted-foreground">
+          {item.label}
+        </span>
+        {offer.name ? (
+          <span className="ml-2 font-medium text-foreground">{offer.name}</span>
+        ) : null}
+      </div>
+      <p className="text-sm text-muted-foreground">{item.description}</p>
+      {offer.summary ? (
+        <p className="text-sm text-foreground">{offer.summary}</p>
+      ) : null}
       {fields.length ? (
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="space-y-2 pl-1 text-sm">
           {fields.map((field) => (
             <RelatedOfferFieldPanel
               key={field.title}
@@ -472,7 +451,7 @@ function RelatedOfferPanel({ item }: { item: AvailableRelatedOfferConfig }) {
           ))}
         </div>
       ) : null}
-    </article>
+    </div>
   );
 }
 
@@ -498,9 +477,7 @@ function RelatedOfferFieldPanel({
         </div>
       ) : typeof value === "string" ? (
         <p className="text-sm leading-7 text-foreground">{value}</p>
-      ) : (
-        null
-      )}
+      ) : null}
     </div>
   );
 }
@@ -513,85 +490,22 @@ function hasFieldValue(value: RelatedOfferFieldValue): boolean {
   return Array.isArray(value) && value.length > 0;
 }
 
-function Section({
-  title,
-  children,
-}: {
-  title: string;
-  children: ReactNode;
-}) {
-  return (
-    <section className="space-y-4">
-      <h3 className="text-lg font-medium text-foreground">{title}</h3>
-      <div className="space-y-4">{children}</div>
-    </section>
-  );
-}
-
-function RichTextPanel({
-  title,
-  value,
-}: {
-  title: string;
-  value?: PortableTextProps["value"] | null;
-}) {
-  if (!value || !Array.isArray(value) || value.length === 0) {
-    return null;
-  }
-
-  return (
-    <div className="rounded-xl border border-border p-4">
-      <h3 className="mb-3 text-sm font-medium uppercase tracking-[0.12em] text-muted-foreground">
-        {title}
-      </h3>
-      <div className="text-sm leading-7 text-foreground">
-        <PortableTextRenderer value={value} />
-      </div>
-    </div>
-  );
-}
-
-function TextPanel({ title, value }: { title: string; value?: string }) {
-  if (!value) {
-    return null;
-  }
-
-  return (
-    <div className="rounded-xl border border-border p-4">
-      <h3 className="mb-2 text-sm font-medium uppercase tracking-[0.12em] text-muted-foreground">
-        {title}
-      </h3>
-      <p className="text-sm leading-7 text-foreground">{value}</p>
-    </div>
-  );
-}
-
 function StringList({ title, items }: { title: string; items?: string[] }) {
   if (!items?.length) {
     return null;
   }
 
   return (
-    <div className="space-y-3">
-      <h3 className="text-sm font-medium uppercase tracking-[0.12em] text-muted-foreground">
+    <div className="mt-3">
+      <p className="text-sm font-medium uppercase tracking-[0.12em] text-muted-foreground">
         {title}
-      </h3>
-      <ul className="space-y-2 text-sm leading-7 text-foreground">
+      </p>
+      <ul className="mt-1 space-y-1 text-sm leading-7 text-foreground">
         {items.map((item) => (
-          <li key={item} className="rounded-xl border border-border px-4 py-3">
-            {item}
-          </li>
+          <li key={item}>• {item}</li>
         ))}
       </ul>
     </div>
-  );
-}
-
-function Badge({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="rounded-full border border-border px-3 py-1 text-xs uppercase tracking-[0.12em]">
-      {children}
-    </span>
   );
 }
 
