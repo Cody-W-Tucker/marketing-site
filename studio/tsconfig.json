@@ -10,6 +10,7 @@
     "module": "esnext",
     "isolatedModules": true,
     "jsx": "preserve",
+    "types": ["node"],
     "incremental": true,
     "preserveSymlinks": true,
     "paths": {

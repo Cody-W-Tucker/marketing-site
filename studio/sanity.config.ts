@@ -24,8 +24,10 @@ const projectId = process.env.SANITY_STUDIO_PROJECT_ID || "your-project-id";
 const dataset = process.env.SANITY_STUDIO_DATASET || "production";
 const apiVersion = process.env.SANITY_STUDIO_API_VERSION || "2026-03-23";
 
-const SANITY_STUDIO_PREVIEW_URL =
-  process.env.SANITY_STUDIO_PREVIEW_URL || "http://localhost:3000";
+const SANITY_STUDIO_PREVIEW_URL = import.meta.env.DEV
+  ? process.env.SANITY_STUDIO_LOCAL_PREVIEW_URL || "http://localhost:3000"
+  : process.env.SANITY_STUDIO_PREVIEW_URL ||
+    "https://marketing-site-frontend.vercel.app/";
 
 export default defineConfig({
   title: "AI Marketing Studio",
