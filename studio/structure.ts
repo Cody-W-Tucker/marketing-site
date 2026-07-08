@@ -71,22 +71,13 @@ export const structure = (S: any, context: any) =>
         S,
         context,
       }),
-      S.listItem()
-        .title("Offers")
-        .icon(ShoppingBag)
-        .child(
-          S.list()
-            .title("Offers")
-            .items([
-              orderableDocumentListDeskItem({
-                type: "offer",
-                title: "Offers",
-                icon: ShoppingBag,
-                S,
-                context,
-              }),
-            ]),
-        ),
+      orderableDocumentListDeskItem({
+        type: "offer",
+        title: "Offers",
+        icon: ShoppingBag,
+        S,
+        context,
+      }),
       S.listItem()
         .title("Bonuses/Sub-Offers")
         .icon(ShoppingBag)

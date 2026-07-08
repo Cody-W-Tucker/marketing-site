@@ -6,6 +6,7 @@ export const linkQuery = `
       defined(href) && !defined(internalLink) => href,
       @.internalLink->slug.current == "index" => "/",
       @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,
+      @.internalLink->_type == "campaign" => "/campaigns/" + @.internalLink->slug.current,
       "/" + @.internalLink->slug.current
     )
 `;
