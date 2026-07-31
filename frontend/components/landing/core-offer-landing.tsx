@@ -7,6 +7,7 @@ import BonusStackSection from "@/components/landing/sections/bonus-stack";
 import GuaranteesSection from "@/components/landing/sections/guarantees";
 import PricingSection from "@/components/landing/sections/pricing";
 import TestimonialsSection from "@/components/landing/sections/testimonials";
+import FaqsSection from "@/components/landing/sections/faqs";
 
 type LandingPage = NonNullable<
   NonNullable<CampaignLandingPageQueryResult>["landingPage"]
@@ -26,8 +27,7 @@ export type CoreOfferLandingProps = {
  *
  * Incremental limitations (plan-required section components not yet implemented):
  *   - urgencyClose
- *   - faqs
- * These are intentionally omitted rather than fabricated.
+ * This is intentionally omitted rather than fabricated.
  */
 export default function CoreOfferLanding({ landingPage }: CoreOfferLandingProps) {
   const sections: Sections = landingPage.sections ?? {};
@@ -71,6 +71,11 @@ export default function CoreOfferLanding({ landingPage }: CoreOfferLandingProps)
       <TestimonialsSection
         testimonials={sections.testimonials}
         enabled={sections.testimonials?.enabled ?? false}
+      />
+
+      <FaqsSection
+        faqs={sections.faqs}
+        enabled={sections.faqs?.enabled ?? false}
       />
     </>
   );
