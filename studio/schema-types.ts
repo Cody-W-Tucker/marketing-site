@@ -27,6 +27,10 @@ import { colorVariant } from "./schemas/blocks/shared/color-variant";
 import { buttonVariant } from "./schemas/blocks/shared/button-variant";
 import sectionPadding from "./schemas/blocks/shared/section-padding";
 import ctaLink from "./schemas/objects/ctaLink";
+import landingSectionToggle from "./schemas/objects/landingSectionToggle";
+import landingTestimonialSection from "./schemas/objects/landingTestimonialSection";
+import landingFaqSection from "./schemas/objects/landingFaqSection";
+import landingPageConfig from "./schemas/objects/landingPageConfig";
 // Schema UI objects
 import hero1 from "./schemas/blocks/hero/hero-1";
 import hero2 from "./schemas/blocks/hero/hero-2";
@@ -81,6 +85,10 @@ export const schemaTypes = [
   buttonVariant,
   sectionPadding,
   ctaLink,
+  landingSectionToggle,
+  landingTestimonialSection,
+  landingFaqSection,
+  landingPageConfig,
   // blocks
   hero1,
   hero2,
