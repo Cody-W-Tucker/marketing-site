@@ -9,6 +9,7 @@
     "dev:studio": "pnpm run dev --workspace=studio",
     "typegen": "cd studio && pnpm typegen",
     "typecheck": "cd frontend && pnpm typecheck",
+    "lint": "pnpm -r run lint",
     "export": "cd studio && sanity dataset export production sample-data.tar.gz"
   },
   "packageManager": "pnpm@10.19.0",

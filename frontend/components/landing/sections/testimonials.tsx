@@ -100,9 +100,13 @@ function TestimonialCard({
     <figure className="flex h-full flex-col rounded-lg border border-border bg-card p-6">
       <blockquote className="flex-1 space-y-4">
         <p className="text-foreground leading-7 break-words">
-          <span className="text-2xl leading-none text-muted-foreground">"</span>
+          <span className="text-2xl leading-none text-muted-foreground">
+            &ldquo;
+          </span>
           {item.quote}
-          <span className="text-2xl leading-none text-muted-foreground">"</span>
+          <span className="text-2xl leading-none text-muted-foreground">
+            &rdquo;
+          </span>
         </p>
       </blockquote>
 
