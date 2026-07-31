@@ -20,6 +20,8 @@ export default defineType({
       title: "Color Variant",
       description: "Select a background color variant",
     }),
+    // DEPRECATED (V1): `stackAlign` is queried but never consumed by the newsletter renderer.
+    // V2 follow-up: confirm no usage, then remove the field and its query selection.
     defineField({
       name: "stackAlign",
       type: "string",

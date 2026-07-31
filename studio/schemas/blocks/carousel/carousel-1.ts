@@ -1,6 +1,9 @@
 import { defineField, defineType } from "sanity";
 import { GalleryHorizontal } from "lucide-react";
 
+// DEPRECATED (V1): `orientation` is still selected by the frontend GROQ query
+// but has no schema field and is never consumed by the renderer.
+// V2 follow-up: remove `orientation` from the carousel-1 query once usage is confirmed absent, then drop this comment.
 export default defineType({
   name: "carousel-1",
   type: "object",
