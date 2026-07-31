@@ -1,4 +1,5 @@
 import { groq } from "next-sanity";
+import { bodyQuery } from "./shared/body";
 
 type RichTextBlock = {
   _type: string;
@@ -181,6 +182,42 @@ export type CampaignLandingPageQueryResult = {
   slug?: string;
   campaignDetails?: CampaignDetails;
   offers?: Offer[];
+  offerIds?: string[];
+  landingPage?: {
+    archetype?: string;
+    primaryOffer?: Offer;
+    positioning?: {
+      headline?: string;
+      subhead?: string;
+      proofStatement?: string;
+      primaryCta?: {
+        label?: string;
+        href?: string;
+        openInNewTab?: boolean;
+      };
+    };
+    sections?: {
+      hero?: { enabled?: boolean };
+      valueEquation?: { enabled?: boolean };
+      fulfillment?: { enabled?: boolean };
+      bonusStack?: { enabled?: boolean };
+      pricing?: { enabled?: boolean };
+      guarantees?: { enabled?: boolean };
+      urgencyClose?: { enabled?: boolean };
+      testimonials?: {
+        enabled?: boolean;
+        items?: Array<{ _id: string; [key: string]: unknown }>;
+      };
+      faqs?: {
+        enabled?: boolean;
+        items?: Array<{
+          _id: string;
+          title?: string;
+          body?: RichTextValue;
+        }>;
+      };
+    };
+  };
 } | null;
 
 export type CampaignSlugsQueryResult = { slug?: { current?: string } | null }[];
@@ -319,6 +356,175 @@ export const CAMPAIGN_LANDING_PAGE_QUERY = groq`
         reducedScopeOrPaymentFlexibility,
         trialOrPaymentPlanTerms,
         cta
+      }
+    },
+    "offerIds": offers[]->_id,
+    "landingPage": landingPage{
+      archetype,
+      primaryOffer->{
+        _id,
+        name,
+        valueEquation{
+          dreamOutcome,
+          perceivedLikelihood,
+          timeDelay,
+          effortAndSacrifice
+        },
+        fulfillmentModel->{
+          title,
+          deliveryFormat,
+          scope,
+          deliverables,
+          timeline,
+          cadenceOrSupportModel,
+          clientResponsibilities,
+          capacityLimit,
+          handoffsOrDependencies,
+          successCriteria,
+          description
+        },
+        bonus[]->{
+          _id,
+          name,
+          summary,
+          objectionSolved,
+          promisedOutcome,
+          deliverables,
+          perceivedValue,
+          exclusivityOrTrigger,
+          coreOfferRelationship
+        },
+        featureList,
+        priceModel->{
+          title,
+          price,
+          currency,
+          billingModel,
+          paymentTerms,
+          valueAnchor,
+          stackedValueEstimate,
+          discountPolicy,
+          description
+        },
+        guarantees[]->{
+          _id,
+          title,
+          guaranteeType,
+          promise,
+          conditions,
+          buyerRequirements,
+          remedy,
+          claimWindowDays,
+          exclusions,
+          riskReversed,
+          description
+        },
+        urgency[]->{
+          _id,
+          title,
+          urgencyType,
+          isEvergreen,
+          startsAt,
+          endsAt,
+          expiringElement,
+          reasonWhyNow,
+          displayCopy,
+          description
+        },
+        scarcity[]->{
+          _id,
+          title,
+          scarcityType,
+          quantityLimit,
+          capacityBasis,
+          replenishmentRule,
+          waitlistBehavior,
+          displayCopy,
+          description
+        },
+        attractionOffer->{
+          _id,
+          name,
+          summary,
+          audience,
+          entryMechanism,
+          easyYesReason,
+          cta,
+          urgencyOrRiskReversal,
+          bridgeToCoreOffer
+        },
+        upsellOffer->{
+          _id,
+          name,
+          summary,
+          prerequisiteOrCoreRelationship,
+          addedScopeSpeedSupport,
+          triggerPoint,
+          decisionFraming,
+          priceDelta,
+          timing
+        },
+        continuityOffer->{
+          _id,
+          name,
+          summary,
+          recurringValue,
+          billingCadence,
+          commitmentOrCancellation,
+          renewalOrRetentionBenefits,
+          onboardingOrContinuityBonus,
+          roleAlongsideOrAfterCore
+        },
+        downsellOffer->{
+          _id,
+          name,
+          summary,
+          changedFromOriginalOffer,
+          fallbackReasonOrObjection,
+          reducedScopeOrPaymentFlexibility,
+          trialOrPaymentPlanTerms,
+          cta
+        }
+      },
+      positioning{
+        headline,
+        subhead,
+        proofStatement,
+        primaryCta{
+          label,
+          href,
+          openInNewTab
+        }
+      },
+      sections{
+        hero{ enabled },
+        valueEquation{ enabled },
+        fulfillment{ enabled },
+        bonusStack{ enabled },
+        pricing{ enabled },
+        guarantees{ enabled },
+        urgencyClose{ enabled },
+        testimonials{
+          enabled,
+          "items": testimonials[]->{
+            _id,
+            name,
+            role,
+            company,
+            quote,
+            avatar
+          }
+        },
+        faqs{
+          enabled,
+          "items": faqs[]->{
+            _id,
+            title,
+            body[]{
+              ${bodyQuery}
+            }
+          }
+        }
       }
     }
   }

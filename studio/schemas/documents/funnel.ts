@@ -1,3 +1,5 @@
+// DEPRECATED (V1): `funnel` document type is orphaned — not registered in schema-types.ts and has no references.
+// V2 follow-up: confirm no dataset documents of this type exist, then delete this file.
 import { defineField, defineType } from "sanity";
 
 export default defineType({

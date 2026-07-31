@@ -1,4 +1,5 @@
 import CampaignLandingPage from "@/components/campaign-landing-page";
+import CoreOfferLanding from "@/components/landing/core-offer-landing";
 import {
   fetchCampaignLandingPage,
   fetchCampaignLandingPagesStaticParams,
@@ -40,11 +41,28 @@ export default async function CampaignPage(props: {
   params: Promise<{ slug: string }>;
 }) {
   const params = await props.params;
-  const campaign = await fetchCampaignLandingPage({ slug: params.slug });
+  const data = await fetchCampaignLandingPage({ slug: params.slug });
 
-  if (!campaign) {
+  if (!data) {
     notFound();
   }
 
-  return <CampaignLandingPage campaign={campaign} />;
+  const lp = data.landingPage;
+
+  if (
+    lp?.archetype === "coreOfferLanding" &&
+    lp.primaryOffer?._id &&
+    new Set(data.offerIds ?? []).has(lp.primaryOffer._id) &&
+    lp.sections != null
+  ) {
+    return <CoreOfferLanding landingPage={lp} />;
+  }
+
+  if (process.env.NODE_ENV !== "production" && lp?.archetype) {
+    console.warn(
+      `[campaign:${params.slug}] archetype "${lp.archetype}" is not a valid core-offer-landing configuration; falling back to legacy CampaignLandingPage.`,
+    );
+  }
+
+  return <CampaignLandingPage campaign={data} />;
 }

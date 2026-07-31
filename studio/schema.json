@@ -139,6 +139,125 @@
     }
   },
   {
+    "type": "type",
+    "name": "positioning",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "headline": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "subhead": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "proofStatement": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "primaryCta": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "inline",
+            "name": "ctaLink"
+          },
+          "optional": true
+        }
+      }
+    }
+  },
+  {
+    "type": "type",
+    "name": "sections",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "hero": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "inline",
+            "name": "landingSectionToggle"
+          },
+          "optional": true
+        },
+        "valueEquation": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "inline",
+            "name": "landingSectionToggle"
+          },
+          "optional": true
+        },
+        "fulfillment": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "inline",
+            "name": "landingSectionToggle"
+          },
+          "optional": true
+        },
+        "bonusStack": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "inline",
+            "name": "landingSectionToggle"
+          },
+          "optional": true
+        },
+        "pricing": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "inline",
+            "name": "landingSectionToggle"
+          },
+          "optional": true
+        },
+        "guarantees": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "inline",
+            "name": "landingSectionToggle"
+          },
+          "optional": true
+        },
+        "testimonials": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "inline",
+            "name": "landingTestimonialSection"
+          },
+          "optional": true
+        },
+        "faqs": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "inline",
+            "name": "landingFaqSection"
+          },
+          "optional": true
+        },
+        "urgencyClose": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "inline",
+            "name": "landingSectionToggle"
+          },
+          "optional": true
+        }
+      }
+    }
+  },
+  {
     "name": "all-posts",
     "type": "type",
     "value": {
@@ -1892,6 +2011,239 @@
                 "name": "link"
               }
             }
+          },
+          "optional": true
+        }
+      }
+    }
+  },
+  {
+    "type": "type",
+    "name": "offer.reference",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_ref": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          }
+        },
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "reference"
+          }
+        },
+        "_weak": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "boolean"
+          },
+          "optional": true
+        }
+      },
+      "dereferencesTo": "offer"
+    }
+  },
+  {
+    "name": "landingPageConfig",
+    "type": "type",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "landingPageConfig"
+          }
+        },
+        "archetype": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "union",
+            "of": [
+              {
+                "type": "string",
+                "value": "coreOfferLanding"
+              }
+            ]
+          },
+          "optional": true
+        },
+        "primaryOffer": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "inline",
+            "name": "offer.reference"
+          },
+          "optional": true
+        },
+        "positioning": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "inline",
+            "name": "positioning"
+          },
+          "optional": true
+        },
+        "sections": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "inline",
+            "name": "sections"
+          },
+          "optional": true
+        }
+      }
+    }
+  },
+  {
+    "name": "landingFaqSection",
+    "type": "type",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "landingFaqSection"
+          }
+        },
+        "enabled": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "boolean"
+          },
+          "optional": true
+        },
+        "faqs": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "array",
+            "of": {
+              "type": "object",
+              "attributes": {
+                "_key": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "string"
+                  }
+                }
+              },
+              "rest": {
+                "type": "inline",
+                "name": "faq.reference"
+              }
+            }
+          },
+          "optional": true
+        }
+      }
+    }
+  },
+  {
+    "name": "landingTestimonialSection",
+    "type": "type",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "landingTestimonialSection"
+          }
+        },
+        "enabled": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "boolean"
+          },
+          "optional": true
+        },
+        "testimonials": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "array",
+            "of": {
+              "type": "object",
+              "attributes": {
+                "_key": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "string"
+                  }
+                }
+              },
+              "rest": {
+                "type": "inline",
+                "name": "testimonial.reference"
+              }
+            }
+          },
+          "optional": true
+        }
+      }
+    }
+  },
+  {
+    "name": "landingSectionToggle",
+    "type": "type",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "landingSectionToggle"
+          }
+        },
+        "enabled": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "boolean"
+          },
+          "optional": true
+        }
+      }
+    }
+  },
+  {
+    "name": "ctaLink",
+    "type": "type",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "ctaLink"
+          }
+        },
+        "label": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "href": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "openInNewTab": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "boolean"
           },
           "optional": true
         }
@@ -5229,36 +5581,6 @@
     }
   },
   {
-    "type": "type",
-    "name": "offer.reference",
-    "value": {
-      "type": "object",
-      "attributes": {
-        "_ref": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "string"
-          }
-        },
-        "_type": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "string",
-            "value": "reference"
-          }
-        },
-        "_weak": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "boolean"
-          },
-          "optional": true
-        }
-      },
-      "dereferencesTo": "offer"
-    }
-  },
-  {
     "name": "campaign",
     "type": "document",
     "attributes": {
@@ -5292,13 +5614,6 @@
         "value": {
           "type": "string"
         }
-      },
-      "title": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
       },
       "campaignDetails": {
         "type": "objectAttribute",
@@ -5371,6 +5686,14 @@
               "name": "offer.reference"
             }
           }
+        },
+        "optional": true
+      },
+      "landingPage": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "landingPageConfig"
         },
         "optional": true
       },
