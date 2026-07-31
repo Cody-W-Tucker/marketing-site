@@ -8,6 +8,7 @@ import GuaranteesSection from "@/components/landing/sections/guarantees";
 import PricingSection from "@/components/landing/sections/pricing";
 import TestimonialsSection from "@/components/landing/sections/testimonials";
 import FaqsSection from "@/components/landing/sections/faqs";
+import UrgencyCloseSection from "@/components/landing/sections/urgency-close";
 
 type LandingPage = NonNullable<
   NonNullable<CampaignLandingPageQueryResult>["landingPage"]
@@ -24,10 +25,6 @@ export type CoreOfferLandingProps = {
  *
  * Reads `landingPage.sections` and emits each currently implemented semantic
  * section in fixed plan order, gated by its `enabled` flag.
- *
- * Incremental limitations (plan-required section components not yet implemented):
- *   - urgencyClose
- * This is intentionally omitted rather than fabricated.
  */
 export default function CoreOfferLanding({ landingPage }: CoreOfferLandingProps) {
   const sections: Sections = landingPage.sections ?? {};
@@ -76,6 +73,13 @@ export default function CoreOfferLanding({ landingPage }: CoreOfferLandingProps)
       <FaqsSection
         faqs={sections.faqs}
         enabled={sections.faqs?.enabled ?? false}
+      />
+
+      <UrgencyCloseSection
+        urgency={primaryOffer?.urgency}
+        scarcity={primaryOffer?.scarcity}
+        primaryCta={positioning?.primaryCta}
+        enabled={sections.urgencyClose?.enabled ?? false}
       />
     </>
   );
