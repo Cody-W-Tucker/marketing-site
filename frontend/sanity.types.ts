@@ -42,6 +42,25 @@ export type MetaImage = {
   _type: "image";
 };
 
+export type Positioning = {
+  headline?: string;
+  subhead?: string;
+  proofStatement?: string;
+  primaryCta?: CtaLink;
+};
+
+export type Sections = {
+  hero?: LandingSectionToggle;
+  valueEquation?: LandingSectionToggle;
+  fulfillment?: LandingSectionToggle;
+  bonusStack?: LandingSectionToggle;
+  pricing?: LandingSectionToggle;
+  guarantees?: LandingSectionToggle;
+  testimonials?: LandingTestimonialSection;
+  faqs?: LandingFaqSection;
+  urgencyClose?: LandingSectionToggle;
+};
+
 export type AllPosts = {
   _type: "all-posts";
   padding?: SectionPadding;
@@ -341,6 +360,53 @@ export type Hero1 = {
       _key: string;
     } & Link
   >;
+};
+
+export type OfferReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "offer";
+};
+
+export type LandingPageConfig = {
+  _type: "landingPageConfig";
+  archetype?: "coreOfferLanding";
+  primaryOffer?: OfferReference;
+  positioning?: Positioning;
+  sections?: Sections;
+};
+
+export type LandingFaqSection = {
+  _type: "landingFaqSection";
+  enabled?: boolean;
+  faqs?: Array<
+    {
+      _key: string;
+    } & FaqReference
+  >;
+};
+
+export type LandingTestimonialSection = {
+  _type: "landingTestimonialSection";
+  enabled?: boolean;
+  testimonials?: Array<
+    {
+      _key: string;
+    } & TestimonialReference
+  >;
+};
+
+export type LandingSectionToggle = {
+  _type: "landingSectionToggle";
+  enabled?: boolean;
+};
+
+export type CtaLink = {
+  _type: "ctaLink";
+  label?: string;
+  href?: string;
+  openInNewTab?: boolean;
 };
 
 export type SectionPadding = {
@@ -932,20 +998,12 @@ export type Post = {
   meta?: Meta;
 };
 
-export type OfferReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "offer";
-};
-
 export type Campaign = {
   _id: string;
   _type: "campaign";
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  title?: string;
   campaignDetails?: {
     magneticReason?: string;
     avatar?: string;
@@ -959,6 +1017,7 @@ export type Campaign = {
       _key: string;
     } & OfferReference
   >;
+  landingPage?: LandingPageConfig;
   orderRank?: string;
 };
 
@@ -1106,6 +1165,8 @@ export type AllSanitySchemaTypes =
   | Meta
   | SanityImageAssetReference
   | MetaImage
+  | Positioning
+  | Sections
   | AllPosts
   | FormNewsletter
   | FaqReference
@@ -1132,6 +1193,12 @@ export type AllSanitySchemaTypes =
   | SectionHeader
   | Hero2
   | Hero1
+  | OfferReference
+  | LandingPageConfig
+  | LandingFaqSection
+  | LandingTestimonialSection
+  | LandingSectionToggle
+  | CtaLink
   | SectionPadding
   | ButtonVariant
   | ColorVariant
@@ -1171,7 +1238,6 @@ export type AllSanitySchemaTypes =
   | AuthorReference
   | CategoryReference
   | Post
-  | OfferReference
   | Campaign
   | Slug
   | Author
@@ -1188,10 +1254,9 @@ export type AllSanitySchemaTypes =
 
 // Source: ../frontend/sanity/queries/campaign.ts
 // Variable: CAMPAIGN_LANDING_PAGE_QUERY
-// Query: *[_type == "campaign" && slug.current == $slug][0]{    _id,    "title": coalesce(title, campaignDetails.magneticReason),    "slug": slug.current,    campaignDetails{      magneticReason,      avatar,      goal,      intervalTime,      containerType    },    offers[]->{      _id,      name,      valueEquation{        dreamOutcome,        perceivedLikelihood,        timeDelay,        effortAndSacrifice      },      fulfillmentModel->{        title,        deliveryFormat,        scope,        deliverables,        timeline,        cadenceOrSupportModel,        clientResponsibilities,        capacityLimit,        handoffsOrDependencies,        successCriteria,        description      },      bonus[]->{        _id,        name,        summary,        objectionSolved,        promisedOutcome,        deliverables,        perceivedValue,        exclusivityOrTrigger,        coreOfferRelationship      },      featureList,      priceModel->{        title,        price,        currency,        billingModel,        paymentTerms,        valueAnchor,        stackedValueEstimate,        discountPolicy,        description      },      guarantees[]->{        _id,        title,        guaranteeType,        promise,        conditions,        buyerRequirements,        remedy,        claimWindowDays,        exclusions,        riskReversed,        description      },      urgency[]->{        _id,        title,        urgencyType,        isEvergreen,        startsAt,        endsAt,        expiringElement,        reasonWhyNow,        displayCopy,        description      },      scarcity[]->{        _id,        title,        scarcityType,        quantityLimit,        capacityBasis,        replenishmentRule,        waitlistBehavior,        displayCopy,        description      },      attractionOffer->{        _id,        name,        summary,        audience,        entryMechanism,        easyYesReason,        cta,        urgencyOrRiskReversal,        bridgeToCoreOffer      },      upsellOffer->{        _id,        name,        summary,        prerequisiteOrCoreRelationship,        addedScopeSpeedSupport,        triggerPoint,        decisionFraming,        priceDelta,        timing      },      continuityOffer->{        _id,        name,        summary,        recurringValue,        billingCadence,        commitmentOrCancellation,        renewalOrRetentionBenefits,        onboardingOrContinuityBonus,        roleAlongsideOrAfterCore      },      downsellOffer->{        _id,        name,        summary,        changedFromOriginalOffer,        fallbackReasonOrObjection,        reducedScopeOrPaymentFlexibility,        trialOrPaymentPlanTerms,        cta      }    }  }
+// Query: *[_type == "campaign" && slug.current == $slug][0]{    _id,    "slug": slug.current,    campaignDetails{      magneticReason,      avatar,      goal,      intervalTime,      containerType    },    offers[]->{      _id,      name,      valueEquation{        dreamOutcome,        perceivedLikelihood,        timeDelay,        effortAndSacrifice      },      fulfillmentModel->{        title,        deliveryFormat,        scope,        deliverables,        timeline,        cadenceOrSupportModel,        clientResponsibilities,        capacityLimit,        handoffsOrDependencies,        successCriteria,        description      },      bonus[]->{        _id,        name,        summary,        objectionSolved,        promisedOutcome,        deliverables,        perceivedValue,        exclusivityOrTrigger,        coreOfferRelationship      },      featureList,      priceModel->{        title,        price,        currency,        billingModel,        paymentTerms,        valueAnchor,        stackedValueEstimate,        discountPolicy,        description      },      guarantees[]->{        _id,        title,        guaranteeType,        promise,        conditions,        buyerRequirements,        remedy,        claimWindowDays,        exclusions,        riskReversed,        description      },      urgency[]->{        _id,        title,        urgencyType,        isEvergreen,        startsAt,        endsAt,        expiringElement,        reasonWhyNow,        displayCopy,        description      },      scarcity[]->{        _id,        title,        scarcityType,        quantityLimit,        capacityBasis,        replenishmentRule,        waitlistBehavior,        displayCopy,        description      },      attractionOffer->{        _id,        name,        summary,        audience,        entryMechanism,        easyYesReason,        cta,        urgencyOrRiskReversal,        bridgeToCoreOffer      },      upsellOffer->{        _id,        name,        summary,        prerequisiteOrCoreRelationship,        addedScopeSpeedSupport,        triggerPoint,        decisionFraming,        priceDelta,        timing      },      continuityOffer->{        _id,        name,        summary,        recurringValue,        billingCadence,        commitmentOrCancellation,        renewalOrRetentionBenefits,        onboardingOrContinuityBonus,        roleAlongsideOrAfterCore      },      downsellOffer->{        _id,        name,        summary,        changedFromOriginalOffer,        fallbackReasonOrObjection,        reducedScopeOrPaymentFlexibility,        trialOrPaymentPlanTerms,        cta      }    },    "offerIds": offers[]->_id,    "landingPage": landingPage{      archetype,      primaryOffer->{        _id,        name,        valueEquation{          dreamOutcome,          perceivedLikelihood,          timeDelay,          effortAndSacrifice        },        fulfillmentModel->{          title,          deliveryFormat,          scope,          deliverables,          timeline,          cadenceOrSupportModel,          clientResponsibilities,          capacityLimit,          handoffsOrDependencies,          successCriteria,          description        },        bonus[]->{          _id,          name,          summary,          objectionSolved,          promisedOutcome,          deliverables,          perceivedValue,          exclusivityOrTrigger,          coreOfferRelationship        },        featureList,        priceModel->{          title,          price,          currency,          billingModel,          paymentTerms,          valueAnchor,          stackedValueEstimate,          discountPolicy,          description        },        guarantees[]->{          _id,          title,          guaranteeType,          promise,          conditions,          buyerRequirements,          remedy,          claimWindowDays,          exclusions,          riskReversed,          description        },        urgency[]->{          _id,          title,          urgencyType,          isEvergreen,          startsAt,          endsAt,          expiringElement,          reasonWhyNow,          displayCopy,          description        },        scarcity[]->{          _id,          title,          scarcityType,          quantityLimit,          capacityBasis,          replenishmentRule,          waitlistBehavior,          displayCopy,          description        },        attractionOffer->{          _id,          name,          summary,          audience,          entryMechanism,          easyYesReason,          cta,          urgencyOrRiskReversal,          bridgeToCoreOffer        },        upsellOffer->{          _id,          name,          summary,          prerequisiteOrCoreRelationship,          addedScopeSpeedSupport,          triggerPoint,          decisionFraming,          priceDelta,          timing        },        continuityOffer->{          _id,          name,          summary,          recurringValue,          billingCadence,          commitmentOrCancellation,          renewalOrRetentionBenefits,          onboardingOrContinuityBonus,          roleAlongsideOrAfterCore        },        downsellOffer->{          _id,          name,          summary,          changedFromOriginalOffer,          fallbackReasonOrObjection,          reducedScopeOrPaymentFlexibility,          trialOrPaymentPlanTerms,          cta        }      },      positioning{        headline,        subhead,        proofStatement,        primaryCta{          label,          href,          openInNewTab        }      },      sections{        hero{ enabled },        valueEquation{ enabled },        fulfillment{ enabled },        bonusStack{ enabled },        pricing{ enabled },        guarantees{ enabled },        urgencyClose{ enabled },        testimonials{          enabled,          "items": testimonials[]->{            _id,            name,            role,            company,            quote,            avatar          }        },        faqs{          enabled,          "items": faqs[]->{            _id,            title,            body[]{                ...,  markDefs[]{    ...,    _type == "link" => {          _key,    ...,    "href": select(      isExternal => href,      defined(href) && !defined(internalLink) => href,      @.internalLink->slug.current == "index" => "/",      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,      @.internalLink->_type == "campaign" => "/campaigns/" + @.internalLink->slug.current,      "/" + @.internalLink->slug.current    )    }  },  _type == "image" => {      ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }  }            }          }        }      }    }  }
 export type CAMPAIGN_LANDING_PAGE_QUERY_RESULT = {
   _id: string;
-  title: string | null;
   slug: string | null;
   campaignDetails: {
     magneticReason: string | null;
@@ -1349,6 +1414,277 @@ export type CAMPAIGN_LANDING_PAGE_QUERY_RESULT = {
       cta: string | null;
     } | null;
   }> | null;
+  offerIds: Array<string> | null;
+  landingPage: {
+    archetype: "coreOfferLanding" | null;
+    primaryOffer: {
+      _id: string;
+      name: string | null;
+      valueEquation: {
+        dreamOutcome: BlockContent | null;
+        perceivedLikelihood: BlockContent | null;
+        timeDelay: BlockContent | null;
+        effortAndSacrifice: BlockContent | null;
+      } | null;
+      fulfillmentModel: {
+        title: string | null;
+        deliveryFormat: string | null;
+        scope: string | null;
+        deliverables: Array<string> | null;
+        timeline: string | null;
+        cadenceOrSupportModel: string | null;
+        clientResponsibilities: Array<string> | null;
+        capacityLimit: string | null;
+        handoffsOrDependencies: Array<string> | null;
+        successCriteria: Array<string> | null;
+        description: BlockContent | null;
+      } | null;
+      bonus: Array<{
+        _id: string;
+        name: string | null;
+        summary: string | null;
+        objectionSolved: BlockContent | null;
+        promisedOutcome: string | null;
+        deliverables: BlockContent | null;
+        perceivedValue: string | null;
+        exclusivityOrTrigger: BlockContent | null;
+        coreOfferRelationship: BlockContent | null;
+      }> | null;
+      featureList: BlockContent | null;
+      priceModel: {
+        title: string | null;
+        price: number | null;
+        currency: "CAD" | "EUR" | "GBP" | "USD" | null;
+        billingModel:
+          | "customQuote"
+          | "oneTime"
+          | "paymentPlan"
+          | "subscription"
+          | "usageBased"
+          | null;
+        paymentTerms: string | null;
+        valueAnchor: string | null;
+        stackedValueEstimate: number | null;
+        discountPolicy: string | null;
+        description: BlockContent | null;
+      } | null;
+      guarantees: Array<{
+        _id: string;
+        title: string | null;
+        guaranteeType:
+          | "moneyBack"
+          | "outcome"
+          | "satisfaction"
+          | "serviceLevel"
+          | "trial"
+          | null;
+        promise: string | null;
+        conditions: string | null;
+        buyerRequirements: string | null;
+        remedy: string | null;
+        claimWindowDays: number | null;
+        exclusions: string | null;
+        riskReversed: string | null;
+        description: BlockContent | null;
+      }> | null;
+      urgency: Array<{
+        _id: string;
+        title: string | null;
+        urgencyType:
+          | "bonusExpires"
+          | "deadline"
+          | "enrollmentWindow"
+          | "eventDriven"
+          | "priceChange"
+          | null;
+        isEvergreen: boolean | null;
+        startsAt: string | null;
+        endsAt: string | null;
+        expiringElement: string | null;
+        reasonWhyNow: string | null;
+        displayCopy: string | null;
+        description: BlockContent | null;
+      }> | null;
+      scarcity: Array<{
+        _id: string;
+        title: string | null;
+        scarcityType:
+          | "applicationOnly"
+          | "capacityCap"
+          | "limitedAccess"
+          | "limitedInventory"
+          | "limitedSeats"
+          | null;
+        quantityLimit: number | null;
+        capacityBasis: string | null;
+        replenishmentRule: string | null;
+        waitlistBehavior:
+          | "applyNext"
+          | "joinWaitlist"
+          | "none"
+          | "notify"
+          | null;
+        displayCopy: string | null;
+        description: BlockContent | null;
+      }> | null;
+      attractionOffer: {
+        _id: string;
+        name: string | null;
+        summary: string | null;
+        audience: BlockContent | null;
+        entryMechanism: BlockContent | null;
+        easyYesReason: BlockContent | null;
+        cta: string | null;
+        urgencyOrRiskReversal: BlockContent | null;
+        bridgeToCoreOffer: BlockContent | null;
+      } | null;
+      upsellOffer: {
+        _id: string;
+        name: string | null;
+        summary: string | null;
+        prerequisiteOrCoreRelationship: BlockContent | null;
+        addedScopeSpeedSupport: BlockContent | null;
+        triggerPoint: BlockContent | null;
+        decisionFraming: BlockContent | null;
+        priceDelta: string | null;
+        timing: string | null;
+      } | null;
+      continuityOffer: {
+        _id: string;
+        name: string | null;
+        summary: string | null;
+        recurringValue: BlockContent | null;
+        billingCadence: string | null;
+        commitmentOrCancellation: BlockContent | null;
+        renewalOrRetentionBenefits: BlockContent | null;
+        onboardingOrContinuityBonus: BlockContent | null;
+        roleAlongsideOrAfterCore: BlockContent | null;
+      } | null;
+      downsellOffer: {
+        _id: string;
+        name: string | null;
+        summary: string | null;
+        changedFromOriginalOffer: BlockContent | null;
+        fallbackReasonOrObjection: BlockContent | null;
+        reducedScopeOrPaymentFlexibility: BlockContent | null;
+        trialOrPaymentPlanTerms: BlockContent | null;
+        cta: string | null;
+      } | null;
+    } | null;
+    positioning: {
+      headline: string | null;
+      subhead: string | null;
+      proofStatement: string | null;
+      primaryCta: {
+        label: string | null;
+        href: string | null;
+        openInNewTab: boolean | null;
+      } | null;
+    } | null;
+    sections: {
+      hero: {
+        enabled: boolean | null;
+      } | null;
+      valueEquation: {
+        enabled: boolean | null;
+      } | null;
+      fulfillment: {
+        enabled: boolean | null;
+      } | null;
+      bonusStack: {
+        enabled: boolean | null;
+      } | null;
+      pricing: {
+        enabled: boolean | null;
+      } | null;
+      guarantees: {
+        enabled: boolean | null;
+      } | null;
+      urgencyClose: {
+        enabled: boolean | null;
+      } | null;
+      testimonials: {
+        enabled: boolean | null;
+        items: Array<{
+          _id: string;
+          name: string | null;
+          role: null;
+          company: null;
+          quote: null;
+          avatar: null;
+        }> | null;
+      } | null;
+      faqs: {
+        enabled: boolean | null;
+        items: Array<{
+          _id: string;
+          title: string | null;
+          body: Array<
+            | {
+                children?: Array<{
+                  marks?: Array<string>;
+                  text?: string;
+                  _type: "span";
+                  _key: string;
+                }>;
+                style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "normal";
+                listItem?: "bullet" | "number";
+                markDefs: Array<{
+                  isExternal?: boolean;
+                  internalLink?:
+                    | CampaignReference
+                    | PageReference
+                    | PostReference;
+                  href: string | "/" | null;
+                  target?: boolean;
+                  _type: "link";
+                  _key: string;
+                }> | null;
+                level?: number;
+                _type: "block";
+                _key: string;
+              }
+            | {
+                _key: string;
+                _type: "code";
+                language?: string;
+                filename?: string;
+                code?: string;
+                highlightedLines?: Array<number>;
+                markDefs: null;
+              }
+            | {
+                asset: {
+                  _id: string;
+                  url: string | null;
+                  mimeType: string | null;
+                  metadata: {
+                    lqip: string | null;
+                    dimensions: {
+                      width: number | null;
+                      height: number | null;
+                    } | null;
+                  } | null;
+                } | null;
+                media?: unknown;
+                hotspot?: SanityImageHotspot;
+                crop?: SanityImageCrop;
+                alt?: string;
+                _type: "image";
+                _key: string;
+                markDefs: null;
+              }
+            | {
+                videoId?: string;
+                _type: "youtube";
+                _key: string;
+                markDefs: null;
+              }
+          > | null;
+        }> | null;
+      } | null;
+    } | null;
+  } | null;
 } | null;
 
 // Source: ../frontend/sanity/queries/campaign.ts
@@ -2600,7 +2936,7 @@ export type SETTINGS_QUERY_RESULT = {
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    '\n  *[_type == "campaign" && slug.current == $slug][0]{\n    _id,\n    "title": coalesce(title, campaignDetails.magneticReason),\n    "slug": slug.current,\n    campaignDetails{\n      magneticReason,\n      avatar,\n      goal,\n      intervalTime,\n      containerType\n    },\n    offers[]->{\n      _id,\n      name,\n      valueEquation{\n        dreamOutcome,\n        perceivedLikelihood,\n        timeDelay,\n        effortAndSacrifice\n      },\n      fulfillmentModel->{\n        title,\n        deliveryFormat,\n        scope,\n        deliverables,\n        timeline,\n        cadenceOrSupportModel,\n        clientResponsibilities,\n        capacityLimit,\n        handoffsOrDependencies,\n        successCriteria,\n        description\n      },\n      bonus[]->{\n        _id,\n        name,\n        summary,\n        objectionSolved,\n        promisedOutcome,\n        deliverables,\n        perceivedValue,\n        exclusivityOrTrigger,\n        coreOfferRelationship\n      },\n      featureList,\n      priceModel->{\n        title,\n        price,\n        currency,\n        billingModel,\n        paymentTerms,\n        valueAnchor,\n        stackedValueEstimate,\n        discountPolicy,\n        description\n      },\n      guarantees[]->{\n        _id,\n        title,\n        guaranteeType,\n        promise,\n        conditions,\n        buyerRequirements,\n        remedy,\n        claimWindowDays,\n        exclusions,\n        riskReversed,\n        description\n      },\n      urgency[]->{\n        _id,\n        title,\n        urgencyType,\n        isEvergreen,\n        startsAt,\n        endsAt,\n        expiringElement,\n        reasonWhyNow,\n        displayCopy,\n        description\n      },\n      scarcity[]->{\n        _id,\n        title,\n        scarcityType,\n        quantityLimit,\n        capacityBasis,\n        replenishmentRule,\n        waitlistBehavior,\n        displayCopy,\n        description\n      },\n      attractionOffer->{\n        _id,\n        name,\n        summary,\n        audience,\n        entryMechanism,\n        easyYesReason,\n        cta,\n        urgencyOrRiskReversal,\n        bridgeToCoreOffer\n      },\n      upsellOffer->{\n        _id,\n        name,\n        summary,\n        prerequisiteOrCoreRelationship,\n        addedScopeSpeedSupport,\n        triggerPoint,\n        decisionFraming,\n        priceDelta,\n        timing\n      },\n      continuityOffer->{\n        _id,\n        name,\n        summary,\n        recurringValue,\n        billingCadence,\n        commitmentOrCancellation,\n        renewalOrRetentionBenefits,\n        onboardingOrContinuityBonus,\n        roleAlongsideOrAfterCore\n      },\n      downsellOffer->{\n        _id,\n        name,\n        summary,\n        changedFromOriginalOffer,\n        fallbackReasonOrObjection,\n        reducedScopeOrPaymentFlexibility,\n        trialOrPaymentPlanTerms,\n        cta\n      }\n    }\n  }\n': CAMPAIGN_LANDING_PAGE_QUERY_RESULT;
+    '\n  *[_type == "campaign" && slug.current == $slug][0]{\n    _id,\n    "slug": slug.current,\n    campaignDetails{\n      magneticReason,\n      avatar,\n      goal,\n      intervalTime,\n      containerType\n    },\n    offers[]->{\n      _id,\n      name,\n      valueEquation{\n        dreamOutcome,\n        perceivedLikelihood,\n        timeDelay,\n        effortAndSacrifice\n      },\n      fulfillmentModel->{\n        title,\n        deliveryFormat,\n        scope,\n        deliverables,\n        timeline,\n        cadenceOrSupportModel,\n        clientResponsibilities,\n        capacityLimit,\n        handoffsOrDependencies,\n        successCriteria,\n        description\n      },\n      bonus[]->{\n        _id,\n        name,\n        summary,\n        objectionSolved,\n        promisedOutcome,\n        deliverables,\n        perceivedValue,\n        exclusivityOrTrigger,\n        coreOfferRelationship\n      },\n      featureList,\n      priceModel->{\n        title,\n        price,\n        currency,\n        billingModel,\n        paymentTerms,\n        valueAnchor,\n        stackedValueEstimate,\n        discountPolicy,\n        description\n      },\n      guarantees[]->{\n        _id,\n        title,\n        guaranteeType,\n        promise,\n        conditions,\n        buyerRequirements,\n        remedy,\n        claimWindowDays,\n        exclusions,\n        riskReversed,\n        description\n      },\n      urgency[]->{\n        _id,\n        title,\n        urgencyType,\n        isEvergreen,\n        startsAt,\n        endsAt,\n        expiringElement,\n        reasonWhyNow,\n        displayCopy,\n        description\n      },\n      scarcity[]->{\n        _id,\n        title,\n        scarcityType,\n        quantityLimit,\n        capacityBasis,\n        replenishmentRule,\n        waitlistBehavior,\n        displayCopy,\n        description\n      },\n      attractionOffer->{\n        _id,\n        name,\n        summary,\n        audience,\n        entryMechanism,\n        easyYesReason,\n        cta,\n        urgencyOrRiskReversal,\n        bridgeToCoreOffer\n      },\n      upsellOffer->{\n        _id,\n        name,\n        summary,\n        prerequisiteOrCoreRelationship,\n        addedScopeSpeedSupport,\n        triggerPoint,\n        decisionFraming,\n        priceDelta,\n        timing\n      },\n      continuityOffer->{\n        _id,\n        name,\n        summary,\n        recurringValue,\n        billingCadence,\n        commitmentOrCancellation,\n        renewalOrRetentionBenefits,\n        onboardingOrContinuityBonus,\n        roleAlongsideOrAfterCore\n      },\n      downsellOffer->{\n        _id,\n        name,\n        summary,\n        changedFromOriginalOffer,\n        fallbackReasonOrObjection,\n        reducedScopeOrPaymentFlexibility,\n        trialOrPaymentPlanTerms,\n        cta\n      }\n    },\n    "offerIds": offers[]->_id,\n    "landingPage": landingPage{\n      archetype,\n      primaryOffer->{\n        _id,\n        name,\n        valueEquation{\n          dreamOutcome,\n          perceivedLikelihood,\n          timeDelay,\n          effortAndSacrifice\n        },\n        fulfillmentModel->{\n          title,\n          deliveryFormat,\n          scope,\n          deliverables,\n          timeline,\n          cadenceOrSupportModel,\n          clientResponsibilities,\n          capacityLimit,\n          handoffsOrDependencies,\n          successCriteria,\n          description\n        },\n        bonus[]->{\n          _id,\n          name,\n          summary,\n          objectionSolved,\n          promisedOutcome,\n          deliverables,\n          perceivedValue,\n          exclusivityOrTrigger,\n          coreOfferRelationship\n        },\n        featureList,\n        priceModel->{\n          title,\n          price,\n          currency,\n          billingModel,\n          paymentTerms,\n          valueAnchor,\n          stackedValueEstimate,\n          discountPolicy,\n          description\n        },\n        guarantees[]->{\n          _id,\n          title,\n          guaranteeType,\n          promise,\n          conditions,\n          buyerRequirements,\n          remedy,\n          claimWindowDays,\n          exclusions,\n          riskReversed,\n          description\n        },\n        urgency[]->{\n          _id,\n          title,\n          urgencyType,\n          isEvergreen,\n          startsAt,\n          endsAt,\n          expiringElement,\n          reasonWhyNow,\n          displayCopy,\n          description\n        },\n        scarcity[]->{\n          _id,\n          title,\n          scarcityType,\n          quantityLimit,\n          capacityBasis,\n          replenishmentRule,\n          waitlistBehavior,\n          displayCopy,\n          description\n        },\n        attractionOffer->{\n          _id,\n          name,\n          summary,\n          audience,\n          entryMechanism,\n          easyYesReason,\n          cta,\n          urgencyOrRiskReversal,\n          bridgeToCoreOffer\n        },\n        upsellOffer->{\n          _id,\n          name,\n          summary,\n          prerequisiteOrCoreRelationship,\n          addedScopeSpeedSupport,\n          triggerPoint,\n          decisionFraming,\n          priceDelta,\n          timing\n        },\n        continuityOffer->{\n          _id,\n          name,\n          summary,\n          recurringValue,\n          billingCadence,\n          commitmentOrCancellation,\n          renewalOrRetentionBenefits,\n          onboardingOrContinuityBonus,\n          roleAlongsideOrAfterCore\n        },\n        downsellOffer->{\n          _id,\n          name,\n          summary,\n          changedFromOriginalOffer,\n          fallbackReasonOrObjection,\n          reducedScopeOrPaymentFlexibility,\n          trialOrPaymentPlanTerms,\n          cta\n        }\n      },\n      positioning{\n        headline,\n        subhead,\n        proofStatement,\n        primaryCta{\n          label,\n          href,\n          openInNewTab\n        }\n      },\n      sections{\n        hero{ enabled },\n        valueEquation{ enabled },\n        fulfillment{ enabled },\n        bonusStack{ enabled },\n        pricing{ enabled },\n        guarantees{ enabled },\n        urgencyClose{ enabled },\n        testimonials{\n          enabled,\n          "items": testimonials[]->{\n            _id,\n            name,\n            role,\n            company,\n            quote,\n            avatar\n          }\n        },\n        faqs{\n          enabled,\n          "items": faqs[]->{\n            _id,\n            title,\n            body[]{\n              \n  ...,\n  markDefs[]{\n    ...,\n    _type == "link" => {\n      \n    _key,\n    ...,\n    "href": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == "index" => "/",\n      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,\n      @.internalLink->_type == "campaign" => "/campaigns/" + @.internalLink->slug.current,\n      "/" + @.internalLink->slug.current\n    )\n\n    }\n  },\n  _type == "image" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  }\n\n            }\n          }\n        }\n      }\n    }\n  }\n': CAMPAIGN_LANDING_PAGE_QUERY_RESULT;
     '\n  *[_type == "campaign" && defined(slug.current)]{\n    slug\n  }\n': CAMPAIGN_SLUGS_QUERY_RESULT;
     '\n  *[_type == "navigation"]{\n    _type,\n    _key,\n    links[]{\n      \n    _key,\n    ...,\n    "href": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == "index" => "/",\n      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,\n      @.internalLink->_type == "campaign" => "/campaigns/" + @.internalLink->slug.current,\n      "/" + @.internalLink->slug.current\n    )\n\n    }\n  }\n': NAVIGATION_QUERY_RESULT;
     '\n  *[_type == "page" && slug.current == $slug][0]{\n    blocks[]{\n      \n  _type == "hero-1" => {\n    _type,\n    _key,\n    tagLine,\n    title,\n    body[]{\n      \n  ...,\n  markDefs[]{\n    ...,\n    _type == "link" => {\n      \n    _key,\n    ...,\n    "href": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == "index" => "/",\n      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,\n      @.internalLink->_type == "campaign" => "/campaigns/" + @.internalLink->slug.current,\n      "/" + @.internalLink->slug.current\n    )\n\n    }\n  },\n  _type == "image" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  }\n\n    },\n    image{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n    links[]{\n      \n    _key,\n    ...,\n    "href": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == "index" => "/",\n      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,\n      @.internalLink->_type == "campaign" => "/campaigns/" + @.internalLink->slug.current,\n      "/" + @.internalLink->slug.current\n    )\n\n    },\n  }\n,\n      \n  _type == "hero-2" => {\n    _type,\n    _key,\n    tagLine,\n    title,\n    body[]{\n      \n  ...,\n  markDefs[]{\n    ...,\n    _type == "link" => {\n      \n    _key,\n    ...,\n    "href": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == "index" => "/",\n      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,\n      @.internalLink->_type == "campaign" => "/campaigns/" + @.internalLink->slug.current,\n      "/" + @.internalLink->slug.current\n    )\n\n    }\n  },\n  _type == "image" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  }\n\n    },\n    links[]{\n      \n    _key,\n    ...,\n    "href": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == "index" => "/",\n      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,\n      @.internalLink->_type == "campaign" => "/campaigns/" + @.internalLink->slug.current,\n      "/" + @.internalLink->slug.current\n    )\n\n    },\n  }\n,\n      \n  _type == "section-header" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    sectionWidth,\n    stackAlign,\n    tagLine,\n    title,\n    description,\n    link{\n      \n    _key,\n    ...,\n    "href": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == "index" => "/",\n      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,\n      @.internalLink->_type == "campaign" => "/campaigns/" + @.internalLink->slug.current,\n      "/" + @.internalLink->slug.current\n    )\n\n    },\n  }\n,\n      \n  _type == "split-row" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    noGap,\n    splitColumns[]{\n      \n  _type == "split-content" => {\n    _type,\n    _key,\n    sticky,\n    padding,\n    colorVariant,\n    tagLine,\n    title,\n    body[]{\n      \n  ...,\n  markDefs[]{\n    ...,\n    _type == "link" => {\n      \n    _key,\n    ...,\n    "href": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == "index" => "/",\n      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,\n      @.internalLink->_type == "campaign" => "/campaigns/" + @.internalLink->slug.current,\n      "/" + @.internalLink->slug.current\n    )\n\n    }\n  },\n  _type == "image" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  }\n\n    },\n    link{\n      \n    _key,\n    ...,\n    "href": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == "index" => "/",\n      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,\n      @.internalLink->_type == "campaign" => "/campaigns/" + @.internalLink->slug.current,\n      "/" + @.internalLink->slug.current\n    )\n\n    },\n  }\n,\n      \n  _type == "split-cards-list" => {\n    _type,\n    _key,\n    list[]{\n      tagLine,\n      title,\n      body[]{\n        \n  ...,\n  markDefs[]{\n    ...,\n    _type == "link" => {\n      \n    _key,\n    ...,\n    "href": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == "index" => "/",\n      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,\n      @.internalLink->_type == "campaign" => "/campaigns/" + @.internalLink->slug.current,\n      "/" + @.internalLink->slug.current\n    )\n\n    }\n  },\n  _type == "image" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  }\n\n      },\n    },\n  }\n,\n      \n  _type == "split-image" => {\n    _type,\n    _key,\n    image{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n  }\n,\n      \n  _type == "split-info-list" => {\n    _type,\n    _key,\n    list[]{\n      image{\n        \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n      },\n      title,\n      body[]{\n        \n  ...,\n  markDefs[]{\n    ...,\n    _type == "link" => {\n      \n    _key,\n    ...,\n    "href": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == "index" => "/",\n      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,\n      @.internalLink->_type == "campaign" => "/campaigns/" + @.internalLink->slug.current,\n      "/" + @.internalLink->slug.current\n    )\n\n    }\n  },\n  _type == "image" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  }\n\n      },\n      tags[],\n    },\n  }\n,\n    },\n  }\n,\n      \n  _type == "grid-row" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    gridColumns,\n    columns[]{\n      \n  _type == "grid-card" => {\n    _type,\n    _key,\n    title,\n    excerpt,\n    image{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n    link{\n      \n    _key,\n    ...,\n    "href": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == "index" => "/",\n      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,\n      @.internalLink->_type == "campaign" => "/campaigns/" + @.internalLink->slug.current,\n      "/" + @.internalLink->slug.current\n    )\n\n    },\n  }\n,\n      \n  _type == "pricing-card" => {\n    _type,\n    _key,\n    title,\n    tagLine,\n    price,\n    list[],\n    excerpt,\n    link{\n      \n    _key,\n    ...,\n    "href": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == "index" => "/",\n      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,\n      @.internalLink->_type == "campaign" => "/campaigns/" + @.internalLink->slug.current,\n      "/" + @.internalLink->slug.current\n    )\n\n    },\n  }\n,\n      \n  _type == "grid-post" => {\n    _type,\n    _key,\n    post->{\n      title,\n      slug,\n      excerpt,\n      image{\n        \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n      },\n      categories[]->{\n        _id,\n        title,\n      },\n    },\n  }\n,\n    },\n  }\n,\n      \n  _type == "carousel-1" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    size,\n    orientation,\n    indicators,\n    images[]{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n  }\n,\n      \n  _type == "carousel-2" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    testimonial[]->{\n      _id,\n      name,\n      title,\n      image{\n        \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n      },\n      body[]{\n        \n  ...,\n  markDefs[]{\n    ...,\n    _type == "link" => {\n      \n    _key,\n    ...,\n    "href": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == "index" => "/",\n      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,\n      @.internalLink->_type == "campaign" => "/campaigns/" + @.internalLink->slug.current,\n      "/" + @.internalLink->slug.current\n    )\n\n    }\n  },\n  _type == "image" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  }\n\n      },\n      rating,\n    },\n  }\n,\n      \n  _type == "timeline-row" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    timelines[]{\n      title,\n      tagLine,\n      body[]{\n        \n  ...,\n  markDefs[]{\n    ...,\n    _type == "link" => {\n      \n    _key,\n    ...,\n    "href": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == "index" => "/",\n      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,\n      @.internalLink->_type == "campaign" => "/campaigns/" + @.internalLink->slug.current,\n      "/" + @.internalLink->slug.current\n    )\n\n    }\n  },\n  _type == "image" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  }\n\n      },\n    },\n  }\n,\n      \n  _type == "cta-1" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    sectionWidth,\n    stackAlign,\n    tagLine,\n    title,\n    body[]{\n      \n  ...,\n  markDefs[]{\n    ...,\n    _type == "link" => {\n      \n    _key,\n    ...,\n    "href": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == "index" => "/",\n      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,\n      @.internalLink->_type == "campaign" => "/campaigns/" + @.internalLink->slug.current,\n      "/" + @.internalLink->slug.current\n    )\n\n    }\n  },\n  _type == "image" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  }\n\n    },\n    links[]{\n      \n    _key,\n    ...,\n    "href": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == "index" => "/",\n      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,\n      @.internalLink->_type == "campaign" => "/campaigns/" + @.internalLink->slug.current,\n      "/" + @.internalLink->slug.current\n    )\n\n    },\n  }\n,\n      \n  _type == "logo-cloud-1" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    title,\n    images[]{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n  }\n,\n      \n  _type == "faqs" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    faqs[]->{\n      _id,\n      title,\n      body[]{\n        \n  ...,\n  markDefs[]{\n    ...,\n    _type == "link" => {\n      \n    _key,\n    ...,\n    "href": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == "index" => "/",\n      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,\n      @.internalLink->_type == "campaign" => "/campaigns/" + @.internalLink->slug.current,\n      "/" + @.internalLink->slug.current\n    )\n\n    }\n  },\n  _type == "image" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  }\n\n      },\n    },\n  }\n,\n      \n  _type == "form-newsletter" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n    stackAlign,\n    consentText,\n    buttonText,\n    successMessage,\n  }\n,\n      \n  _type == "all-posts" => {\n    _type,\n    _key,\n    padding,\n    colorVariant,\n  }\n,\n    },\n    \n  meta{\n    title,\n    description,\n    noindex,\n    image{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    }\n  }\n,\n  }\n': PAGE_QUERY_RESULT;
