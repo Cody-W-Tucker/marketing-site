@@ -37,6 +37,7 @@ export default defineType({
   type: "document",
   description:
     "Campaign-level naming wrapper and offer containment. Use the Magic Name fields to shape the market-facing name, not the underlying offer mechanics. Guarantees, urgency, and scarcity belong on each offer so the conversion mechanics stay attached to what is being sold.",
+  groups: [{ name: "landingPage", title: "Landing Page" }],
   fields: [
     defineField({
       name: "campaignDetails",
@@ -104,6 +105,14 @@ export default defineType({
       description:
         "The offers contained in this campaign. Configure each offer's guarantees, urgency, and scarcity on the offer itself.",
       of: [{ type: "reference", to: [{ type: "offer" }] }],
+    }),
+    defineField({
+      name: "landingPage",
+      title: "Landing Page",
+      type: "landingPageConfig",
+      group: "landingPage",
+      description:
+        "Controls the constrained Core Offer Landing Page archetype. The page is compiled from the primary offer plus the positioning and section toggles here. This is not a free layout canvas.",
     }),
     orderRankField({ type: "campaign" }),
   ],
