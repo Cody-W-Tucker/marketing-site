@@ -182,6 +182,42 @@ export type CampaignLandingPageQueryResult = {
   slug?: string;
   campaignDetails?: CampaignDetails;
   offers?: Offer[];
+  offerIds?: string[];
+  landingPage?: {
+    archetype?: string;
+    primaryOffer?: Offer;
+    positioning?: {
+      headline?: string;
+      subhead?: string;
+      proofStatement?: string;
+      primaryCta?: {
+        label?: string;
+        href?: string;
+        openInNewTab?: boolean;
+      };
+    };
+    sections?: {
+      hero?: { enabled?: boolean };
+      valueEquation?: { enabled?: boolean };
+      fulfillment?: { enabled?: boolean };
+      bonusStack?: { enabled?: boolean };
+      pricing?: { enabled?: boolean };
+      guarantees?: { enabled?: boolean };
+      urgencyClose?: { enabled?: boolean };
+      testimonials?: {
+        enabled?: boolean;
+        items?: Array<{ _id: string; [key: string]: unknown }>;
+      };
+      faqs?: {
+        enabled?: boolean;
+        items?: Array<{
+          _id: string;
+          title?: string;
+          body?: RichTextValue;
+        }>;
+      };
+    };
+  };
 } | null;
 
 export type CampaignSlugsQueryResult = { slug?: { current?: string } | null }[];
@@ -451,12 +487,26 @@ export const CAMPAIGN_LANDING_PAGE_QUERY = groq`
         }
       },
       positioning{
-        primaryCta
+        headline,
+        subhead,
+        proofStatement,
+        primaryCta{
+          label,
+          href,
+          openInNewTab
+        }
       },
       sections{
-        testimonialSection{
+        hero{ enabled },
+        valueEquation{ enabled },
+        fulfillment{ enabled },
+        bonusStack{ enabled },
+        pricing{ enabled },
+        guarantees{ enabled },
+        urgencyClose{ enabled },
+        testimonials{
           enabled,
-          testimonials[]->{
+          "items": testimonials[]->{
             _id,
             name,
             role,
@@ -465,9 +515,9 @@ export const CAMPAIGN_LANDING_PAGE_QUERY = groq`
             avatar
           }
         },
-        faqSection{
+        faqs{
           enabled,
-          faqs[]->{
+          "items": faqs[]->{
             _id,
             title,
             body[]{
