@@ -51,6 +51,10 @@ export default defineType({
       name: "description",
       type: "text",
     }),
+    // DEPRECATED: `link` is not defined in this schema and is unconsumed by
+    // any renderer. The frontend query (frontend/sanity/queries/section-header.ts)
+    // still projects it. Retained in the query for V1 compatibility; pending
+    // V2 removal from the query.
   ],
   preview: {
     select: {
