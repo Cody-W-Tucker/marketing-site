@@ -13,7 +13,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { toast } from "sonner";
-import { useCallback } from "react";
 import { Loader2 } from "lucide-react";
 import { stegaClean } from "next-sanity";
 import { PAGE_QUERY_RESULT } from "@/sanity.types";
@@ -51,34 +50,31 @@ export default function FormNewsletter({
 
   const { isSubmitting } = form.formState;
 
-  const handleSend = useCallback(
-    async ({ email }: { email: string }) => {
-      try {
-        const response = await fetch("/api/newsletter", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email,
-          }),
-        });
+  const handleSend = async ({ email }: { email: string }) => {
+    try {
+      const response = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+        }),
+      });
 
-        const result = await response.json();
+      const result = await response.json();
 
-        if (response.ok) {
-          toast(successMessage);
-          form.reset();
-        } else {
-          toast.error(result.error);
-        }
-      } catch (error: any) {
-        toast.error(error.message);
-        throw new Error(error.message);
+      if (response.ok) {
+        toast(successMessage);
+        form.reset();
+      } else {
+        toast.error(result.error);
       }
-    },
-    [form],
-  );
+    } catch (error: any) {
+      toast.error(error.message);
+      throw new Error(error.message);
+    }
+  };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     await handleSend(values);
